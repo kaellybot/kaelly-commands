@@ -1,14 +1,10 @@
-package commands
+package constants
 
 type AnkamaGame struct {
 	Name  string
 	Icon  string
 	Emoji string
 }
-
-const (
-	AnkamaLogo = "https://i.imgur.com/dcqcAr2.png"
-)
 
 func GetGame() AnkamaGame {
 	return getDofusGame()

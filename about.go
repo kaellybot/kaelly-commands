@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/kaellybot/kaelly-commands/models/constants"
 	i18n "github.com/kaysoro/discordgo-i18n"
 )
 
@@ -13,10 +14,10 @@ const (
 func getAboutSlashCommand() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
 		Name:                     AboutCommandName,
-		Description:              i18n.Get(DefaultLocale, "about.description"),
+		Description:              "about.description",
 		Type:                     discordgo.ChatApplicationCommand,
-		DefaultMemberPermissions: GetDefaultPermission(),
-		DMPermission:             GetDMPermission(),
+		DefaultMemberPermissions: constants.GetDefaultPermission(),
+		DMPermission:             constants.GetDMPermission(),
 		DescriptionLocalizations: i18n.GetLocalizations("about.description"),
 	}
 }
