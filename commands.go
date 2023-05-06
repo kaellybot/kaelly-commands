@@ -4,12 +4,12 @@ import "github.com/bwmarrin/discordgo"
 
 type GetLocalChoicesFn func() []*discordgo.ApplicationCommandOptionChoice
 
-func GetCommands(getLocalChoices GetLocalChoicesFn) []*discordgo.ApplicationCommand {
+func GetCommands(localChoices []*discordgo.ApplicationCommandOptionChoice) []*discordgo.ApplicationCommand {
 	return []*discordgo.ApplicationCommand{
 		getAboutSlashCommand(),
 		getAlignSlashCommand(),
 		getAlignUserCommand(),
-		getConfigSlashCommand(getLocalChoices),
+		getConfigSlashCommand(localChoices),
 		getJobSlashCommand(),
 		getJobUserCommand(),
 		getPosSlashCommand(),

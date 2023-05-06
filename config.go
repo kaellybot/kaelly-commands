@@ -22,7 +22,7 @@ const (
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
-func getConfigSlashCommand(getLocalChoices GetLocalChoicesFn) *discordgo.ApplicationCommand {
+func getConfigSlashCommand(localChoices []*discordgo.ApplicationCommandOptionChoice) *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
 		Name:                     ConfigCommandName,
 		Description:              "config.description",
@@ -61,7 +61,7 @@ func getConfigSlashCommand(getLocalChoices GetLocalChoicesFn) *discordgo.Applica
 						DescriptionLocalizations: *i18n.GetLocalizations("config.almanax.language.description"),
 						Type:                     discordgo.ApplicationCommandOptionInteger,
 						Required:                 false,
-						Choices:                  getLocalChoices(),
+						Choices:                  localChoices,
 					},
 					{
 						Name:                     ConfigChannelOptionName,
@@ -104,7 +104,7 @@ func getConfigSlashCommand(getLocalChoices GetLocalChoicesFn) *discordgo.Applica
 						DescriptionLocalizations: *i18n.GetLocalizations("config.rss.language.description"),
 						Type:                     discordgo.ApplicationCommandOptionInteger,
 						Required:                 false,
-						Choices:                  getLocalChoices(),
+						Choices:                  localChoices,
 					},
 					{
 						Name:                     ConfigChannelOptionName,
@@ -167,7 +167,7 @@ func getConfigSlashCommand(getLocalChoices GetLocalChoicesFn) *discordgo.Applica
 						DescriptionLocalizations: *i18n.GetLocalizations("config.twitter.language.description"),
 						Type:                     discordgo.ApplicationCommandOptionInteger,
 						Required:                 false,
-						Choices:                  getLocalChoices(),
+						Choices:                  localChoices,
 					},
 					{
 						Name:                     ConfigChannelOptionName,
