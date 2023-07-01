@@ -13,6 +13,9 @@ const (
 	ItemCommandName = "item"
 
 	ItemQueryOptionName = "query"
+
+	itemCustomIDGroups       = 2
+	itemRecipeCustomIDGroups = 2
 )
 
 var (
@@ -54,7 +57,7 @@ func CraftItemRecipeCustomID(itemID string) string {
 func ExtractItemCustomID(customID string) (string, bool) {
 	if itemCustomID.MatchString(customID) {
 		groups := itemCustomID.FindStringSubmatch(customID)
-		if len(groups) == 2 {
+		if len(groups) == itemCustomIDGroups {
 			return groups[1], true
 		}
 	}
@@ -65,7 +68,7 @@ func ExtractItemCustomID(customID string) (string, bool) {
 func ExtractItemRecipeCustomID(customID string) (string, bool) {
 	if itemRecipeCustomID.MatchString(customID) {
 		groups := itemRecipeCustomID.FindStringSubmatch(customID)
-		if len(groups) == 2 {
+		if len(groups) == itemRecipeCustomIDGroups {
 			return groups[1], true
 		}
 	}

@@ -14,6 +14,9 @@ const (
 	SetCommandName = "set"
 
 	SetQueryOptionName = "query"
+
+	setCustomIDGroups      = 2
+	setBonusCustomIDGroups = 3
 )
 
 var (
@@ -55,7 +58,7 @@ func CraftSetBonusCustomID(setID string, itemNumber int) string {
 func ExtractSetCustomID(customID string) (string, bool) {
 	if setCustomID.MatchString(customID) {
 		groups := setCustomID.FindStringSubmatch(customID)
-		if len(groups) == 2 {
+		if len(groups) == setCustomIDGroups {
 			return groups[1], true
 		}
 	}
@@ -66,7 +69,7 @@ func ExtractSetCustomID(customID string) (string, bool) {
 func ExtractSetBonusCustomID(customID string) (string, int, bool) {
 	if setBonusCustomID.MatchString(customID) {
 		groups := setBonusCustomID.FindStringSubmatch(customID)
-		if len(groups) == 3 {
+		if len(groups) == setBonusCustomIDGroups {
 			itemNumber, err := strconv.Atoi(groups[2])
 			if err == nil {
 				return groups[1], itemNumber, true
