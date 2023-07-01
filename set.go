@@ -1,6 +1,10 @@
 package commands
 
 import (
+	"fmt"
+	"regexp"
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
 	i18n "github.com/kaysoro/discordgo-i18n"
@@ -10,6 +14,11 @@ const (
 	SetCommandName = "set"
 
 	SetQueryOptionName = "query"
+)
+
+var (
+	setCustomID      = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)$", SetCommandName))
+	setBonusCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/bonuses/(\\d+)$", SetCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
@@ -33,4 +42,42 @@ func getSetSlashCommand() *discordgo.ApplicationCommand {
 			},
 		},
 	}
+}
+
+func CraftSetCustomID(setID string) string {
+	return fmt.Sprintf("/%s/%s", SetCommandName, setID)
+}
+
+func CraftSetBonusCustomID(setID string, itemNumber int) string {
+	return fmt.Sprintf("/%s/%s/bonuses/%d", SetCommandName, setID, itemNumber)
+}
+
+func ExtractSetCustomID(customID string) (string, bool) {
+	if setCustomID.MatchString(customID) {
+		groups := setCustomID.FindStringSubmatch(customID)
+		if len(groups) == 2 {
+			return groups[1], true
+		}
+	}
+
+	return "", false
+}
+
+func ExtractSetBonusCustomID(customID string) (string, int, bool) {
+	if setBonusCustomID.MatchString(customID) {
+		groups := setBonusCustomID.FindStringSubmatch(customID)
+		if len(groups) == 3 {
+			itemNumber, err := strconv.Atoi(groups[2])
+			if err == nil {
+				return groups[1], itemNumber, true
+			}
+		}
+	}
+
+	return "", 0, false
+}
+
+func IsBelongsToSet(customID string) bool {
+	return setCustomID.MatchString(customID) ||
+		setBonusCustomID.MatchString(customID)
 }
