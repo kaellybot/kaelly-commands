@@ -9,9 +9,8 @@ import (
 
 const (
 	expectedSetID            = "123"
-	expectedBonus            = 7
 	expectedSetCustomID      = "/set/123"
-	expectedSetBonusCustomID = "/set/123/bonuses/7"
+	expectedSetBonusCustomID = "/set/123/bonuses"
 )
 
 func TestCraftSetCustomID(t *testing.T) {
@@ -21,7 +20,7 @@ func TestCraftSetCustomID(t *testing.T) {
 }
 
 func TestCraftSetBonusCustomID(t *testing.T) {
-	actual := commands.CraftSetBonusCustomID(expectedSetID, expectedBonus)
+	actual := commands.CraftSetBonusCustomID(expectedSetID)
 	assert.Equal(t, expectedSetBonusCustomID, actual,
 		"CraftSetBonusCustomID should return the expected bonus custom ID")
 }
@@ -41,16 +40,14 @@ func TestExtractSetCustomID(t *testing.T) {
 
 func TestExtractSetBonusCustomID(t *testing.T) {
 	// Nominal case
-	actualSetID, actualItemNb, ok := commands.ExtractSetBonusCustomID(expectedSetBonusCustomID)
+	actualSetID, ok := commands.ExtractSetBonusCustomID(expectedSetBonusCustomID)
 	assert.True(t, ok,
 		"ExtractSetBonusCustomID should indicate a successful extraction")
 	assert.Equal(t, expectedSetID, actualSetID,
 		"ExtractSetBonusCustomID should return the expected set ID")
-	assert.Equal(t, expectedBonus, actualItemNb,
-		"ExtractSetBonusCustomID should return the expected set ID")
 
 	// Bad case
-	_, _, ok = commands.ExtractSetBonusCustomID(expectedSetCustomID)
+	_, ok = commands.ExtractSetBonusCustomID(expectedSetCustomID)
 	assert.False(t, ok, "ExtractSetBonusCustomID should indicate a failed extraction")
 }
 

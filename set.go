@@ -1,12 +1,13 @@
+// nolint:nolintlint,dupl
 package commands
 
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
+	"github.com/kaellybot/kaelly-commands/utils/regex"
 	i18n "github.com/kaysoro/discordgo-i18n"
 )
 
@@ -16,15 +17,15 @@ const (
 	SetQueryOptionName = "query"
 
 	setCustomIDGroups      = 2
-	setBonusCustomIDGroups = 3
+	setBonusCustomIDGroups = 2
 )
 
 var (
 	setCustomID      = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)$", SetCommandName))
-	setBonusCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/bonuses/(\\d+)$", SetCommandName))
+	setBonusCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/bonuses$", SetCommandName))
 )
 
-//nolint:nolintlint,exhaustive,lll,dupl,funlen
+//nolint:exhaustive,lll,funlen
 func getSetSlashCommand() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
 		Name:                     SetCommandName,
@@ -51,36 +52,28 @@ func CraftSetCustomID(setID string) string {
 	return fmt.Sprintf("/%s/%s", SetCommandName, setID)
 }
 
-func CraftSetBonusCustomID(setID string, itemNumber int) string {
-	return fmt.Sprintf("/%s/%s/bonuses/%d", SetCommandName, setID, itemNumber)
+func CraftSetBonusCustomID(setID string) string {
+	return fmt.Sprintf("/%s/%s/bonuses", SetCommandName, setID)
 }
 
 func ExtractSetCustomID(customID string) (string, bool) {
-	if setCustomID.MatchString(customID) {
-		groups := setCustomID.FindStringSubmatch(customID)
-		if len(groups) == setCustomIDGroups {
-			return groups[1], true
-		}
+	if groups, ok := regex.ExtractCustomID(customID, setCustomID,
+		setCustomIDGroups); ok {
+		return groups[1], true
 	}
 
 	return "", false
 }
 
-func ExtractSetBonusCustomID(customID string) (string, int, bool) {
-	if setBonusCustomID.MatchString(customID) {
-		groups := setBonusCustomID.FindStringSubmatch(customID)
-		if len(groups) == setBonusCustomIDGroups {
-			itemNumber, err := strconv.Atoi(groups[2])
-			if err == nil {
-				return groups[1], itemNumber, true
-			}
-		}
+func ExtractSetBonusCustomID(customID string) (string, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, setBonusCustomID,
+		setBonusCustomIDGroups); ok {
+		return groups[1], true
 	}
 
-	return "", 0, false
+	return "", false
 }
 
 func IsBelongsToSet(customID string) bool {
-	return setCustomID.MatchString(customID) ||
-		setBonusCustomID.MatchString(customID)
+	return regex.IsBelongTo(customID, setCustomID, setBonusCustomID)
 }

@@ -1,3 +1,4 @@
+// nolint:nolintlint,dupl
 package commands
 
 import (
@@ -6,6 +7,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
+	"github.com/kaellybot/kaelly-commands/utils/regex"
 	i18n "github.com/kaysoro/discordgo-i18n"
 )
 
@@ -23,7 +25,7 @@ var (
 	itemRecipeCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe$", ItemCommandName))
 )
 
-//nolint:nolintlint,exhaustive,lll,dupl,funlen
+//nolint:exhaustive,lll,funlen
 func getItemSlashCommand() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
 		Name:                     ItemCommandName,
@@ -55,28 +57,23 @@ func CraftItemRecipeCustomID(itemID string) string {
 }
 
 func ExtractItemCustomID(customID string) (string, bool) {
-	if itemCustomID.MatchString(customID) {
-		groups := itemCustomID.FindStringSubmatch(customID)
-		if len(groups) == itemCustomIDGroups {
-			return groups[1], true
-		}
+	if groups, ok := regex.ExtractCustomID(customID, itemCustomID,
+		itemCustomIDGroups); ok {
+		return groups[1], true
 	}
 
 	return "", false
 }
 
 func ExtractItemRecipeCustomID(customID string) (string, bool) {
-	if itemRecipeCustomID.MatchString(customID) {
-		groups := itemRecipeCustomID.FindStringSubmatch(customID)
-		if len(groups) == itemRecipeCustomIDGroups {
-			return groups[1], true
-		}
+	if groups, ok := regex.ExtractCustomID(customID, itemRecipeCustomID,
+		itemRecipeCustomIDGroups); ok {
+		return groups[1], true
 	}
 
 	return "", false
 }
 
 func IsBelongsToItem(customID string) bool {
-	return itemCustomID.MatchString(customID) ||
-		itemRecipeCustomID.MatchString(customID)
+	return regex.IsBelongTo(customID, itemCustomID, itemRecipeCustomID)
 }
