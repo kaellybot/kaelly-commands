@@ -9,12 +9,12 @@ import (
 
 const (
 	expectedItemID             = "123"
-	expectedItemCustomID       = "/item/123"
+	expectedItemCustomID       = "/item"
 	expectedItemRecipeCustomID = "/item/123/recipe"
 )
 
 func TestCraftItemCustomID(t *testing.T) {
-	actual := commands.CraftItemCustomID(expectedItemID)
+	actual := commands.CraftItemCustomID()
 	assert.Equal(t, expectedItemCustomID, actual,
 		"CraftItemCustomID should return the expected Item custom ID")
 }
@@ -23,19 +23,6 @@ func TestCraftItemRecipeCustomID(t *testing.T) {
 	actual := commands.CraftItemRecipeCustomID(expectedItemID)
 	assert.Equal(t, expectedItemRecipeCustomID, actual,
 		"CraftItemRecipeCustomID should return the expected Recipe custom ID")
-}
-
-func TestExtractItemCustomID(t *testing.T) {
-	// Nominal case
-	actualItemID, ok := commands.ExtractItemCustomID(expectedItemCustomID)
-	assert.True(t, ok,
-		"ExtractItemCustomID should indicate a successful extraction")
-	assert.Equal(t, expectedItemID, actualItemID,
-		"ExtractItemCustomID should return the expected Item ID")
-
-	// Bad case
-	_, ok = commands.ExtractItemCustomID(expectedItemRecipeCustomID)
-	assert.False(t, ok, "expectedItemCustomID should indicate a failed extraction")
 }
 
 func TestExtractItemRecipeCustomID(t *testing.T) {

@@ -16,12 +16,11 @@ const (
 
 	ItemQueryOptionName = "query"
 
-	itemCustomIDGroups       = 2
 	itemRecipeCustomIDGroups = 2
 )
 
 var (
-	itemCustomID       = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)$", ItemCommandName))
+	itemCustomID       = regexp.MustCompile(fmt.Sprintf("^/%s$", ItemCommandName))
 	itemRecipeCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe$", ItemCommandName))
 )
 
@@ -48,21 +47,12 @@ func getItemSlashCommand() *discordgo.ApplicationCommand {
 	}
 }
 
-func CraftItemCustomID(itemID string) string {
-	return fmt.Sprintf("/%s/%s", ItemCommandName, itemID)
+func CraftItemCustomID() string {
+	return fmt.Sprintf("/%s", ItemCommandName)
 }
 
 func CraftItemRecipeCustomID(itemID string) string {
 	return fmt.Sprintf("/%s/%s/recipe", ItemCommandName, itemID)
-}
-
-func ExtractItemCustomID(customID string) (string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, itemCustomID,
-		itemCustomIDGroups); ok {
-		return groups[1], true
-	}
-
-	return "", false
 }
 
 func ExtractItemRecipeCustomID(customID string) (string, bool) {
