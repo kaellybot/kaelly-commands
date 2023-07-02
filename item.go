@@ -16,12 +16,15 @@ const (
 
 	ItemQueryOptionName = "query"
 
-	itemRecipeCustomIDGroups = 2
+	itemCustomIDGroups        = 1
+	itemEffectsCustomIDGroups = 2
+	itemRecipeCustomIDGroups  = 2
 )
 
 var (
-	itemCustomID       = regexp.MustCompile(fmt.Sprintf("^/%s$", ItemCommandName))
-	itemRecipeCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe$", ItemCommandName))
+	itemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s$", ItemCommandName))
+	itemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects$", ItemCommandName))
+	itemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe$", ItemCommandName))
 )
 
 //nolint:exhaustive,lll,funlen
@@ -51,8 +54,30 @@ func CraftItemCustomID() string {
 	return fmt.Sprintf("/%s", ItemCommandName)
 }
 
+func CraftItemEffectsCustomID(itemID string) string {
+	return fmt.Sprintf("/%s/%s/effects", ItemCommandName, itemID)
+}
+
 func CraftItemRecipeCustomID(itemID string) string {
 	return fmt.Sprintf("/%s/%s/recipe", ItemCommandName, itemID)
+}
+
+func ExtractItemCustomID(customID string) bool {
+	if _, ok := regex.ExtractCustomID(customID, itemCustomID,
+		itemCustomIDGroups); ok {
+		return true
+	}
+
+	return false
+}
+
+func ExtractItemEffectsCustomID(customID string) (string, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, itemEffectsCustomID,
+		itemEffectsCustomIDGroups); ok {
+		return groups[1], true
+	}
+
+	return "", false
 }
 
 func ExtractItemRecipeCustomID(customID string) (string, bool) {
@@ -65,5 +90,6 @@ func ExtractItemRecipeCustomID(customID string) (string, bool) {
 }
 
 func IsBelongsToItem(customID string) bool {
-	return regex.IsBelongTo(customID, itemCustomID, itemRecipeCustomID)
+	return regex.IsBelongTo(customID, itemCustomID,
+		itemEffectsCustomID, itemRecipeCustomID)
 }
