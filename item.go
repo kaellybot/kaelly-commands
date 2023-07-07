@@ -16,15 +16,15 @@ const (
 
 	ItemQueryOptionName = "query"
 
-	itemCustomIDGroups        = 1
-	itemEffectsCustomIDGroups = 2
-	itemRecipeCustomIDGroups  = 2
+	itemCustomIDGroups        = 2
+	itemEffectsCustomIDGroups = 3
+	itemRecipeCustomIDGroups  = 3
 )
 
 var (
-	itemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s$", ItemCommandName))
-	itemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects$", ItemCommandName))
-	itemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe$", ItemCommandName))
+	itemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s&type=(\\w+)$", ItemCommandName))
+	itemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects&type=(\\w+)$", ItemCommandName))
+	itemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe&type=(\\w+)$", ItemCommandName))
 )
 
 //nolint:exhaustive,lll,funlen
@@ -50,43 +50,43 @@ func getItemSlashCommand() *discordgo.ApplicationCommand {
 	}
 }
 
-func CraftItemCustomID() string {
-	return fmt.Sprintf("/%s", ItemCommandName)
+func CraftItemCustomID(itemType string) string {
+	return fmt.Sprintf("/%s&type=%s", ItemCommandName, itemType)
 }
 
-func CraftItemEffectsCustomID(itemID string) string {
-	return fmt.Sprintf("/%s/%s/effects", ItemCommandName, itemID)
+func CraftItemEffectsCustomID(itemID, itemType string) string {
+	return fmt.Sprintf("/%s/%s/effects&type=%s", ItemCommandName, itemID, itemType)
 }
 
-func CraftItemRecipeCustomID(itemID string) string {
-	return fmt.Sprintf("/%s/%s/recipe", ItemCommandName, itemID)
+func CraftItemRecipeCustomID(itemID, itemType string) string {
+	return fmt.Sprintf("/%s/%s/recipe&type=%s", ItemCommandName, itemID, itemType)
 }
 
-func ExtractItemCustomID(customID string) bool {
-	if _, ok := regex.ExtractCustomID(customID, itemCustomID,
+func ExtractItemCustomID(customID string) (string, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, itemCustomID,
 		itemCustomIDGroups); ok {
-		return true
+		return groups[1], true
 	}
 
-	return false
+	return "", false
 }
 
-func ExtractItemEffectsCustomID(customID string) (string, bool) {
+func ExtractItemEffectsCustomID(customID string) (string, string, bool) {
 	if groups, ok := regex.ExtractCustomID(customID, itemEffectsCustomID,
 		itemEffectsCustomIDGroups); ok {
-		return groups[1], true
+		return groups[1], groups[2], true
 	}
 
-	return "", false
+	return "", "", false
 }
 
-func ExtractItemRecipeCustomID(customID string) (string, bool) {
+func ExtractItemRecipeCustomID(customID string) (string, string, bool) {
 	if groups, ok := regex.ExtractCustomID(customID, itemRecipeCustomID,
 		itemRecipeCustomIDGroups); ok {
-		return groups[1], true
+		return groups[1], groups[2], true
 	}
 
-	return "", false
+	return "", "", false
 }
 
 func IsBelongsToItem(customID string) bool {

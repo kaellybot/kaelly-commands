@@ -9,68 +9,75 @@ import (
 
 const (
 	expectedItemID              = "123"
-	expectedItemCustomID        = "/item"
-	expectedItemEffectsCustomID = "/item/123/effects"
-	expectedItemRecipeCustomID  = "/item/123/recipe"
+	expectedItemType            = "QUEST_ITEM"
+	expectedItemCustomID        = "/item&type=QUEST_ITEM"
+	expectedItemEffectsCustomID = "/item/123/effects&type=QUEST_ITEM"
+	expectedItemRecipeCustomID  = "/item/123/recipe&type=QUEST_ITEM"
 )
 
 func TestCraftItemCustomID(t *testing.T) {
-	actual := commands.CraftItemCustomID()
+	actual := commands.CraftItemCustomID(expectedItemType)
 	assert.Equal(t, expectedItemCustomID, actual,
 		"CraftItemCustomID should return the expected Item custom ID")
 }
 
 func TestCraftItemEffectsCustomID(t *testing.T) {
-	actual := commands.CraftItemEffectsCustomID(expectedItemID)
+	actual := commands.CraftItemEffectsCustomID(expectedItemID, expectedItemType)
 	assert.Equal(t, expectedItemEffectsCustomID, actual,
 		"CraftItemEffectsCustomID should return the expected Effects custom ID")
 }
 
 func TestCraftItemRecipeCustomID(t *testing.T) {
-	actual := commands.CraftItemRecipeCustomID(expectedItemID)
+	actual := commands.CraftItemRecipeCustomID(expectedItemID, expectedItemType)
 	assert.Equal(t, expectedItemRecipeCustomID, actual,
 		"CraftItemRecipeCustomID should return the expected Recipe custom ID")
 }
 
 func TestExtractItemCustomID(t *testing.T) {
 	// Nominal case
-	ok := commands.ExtractItemCustomID(expectedItemCustomID)
+	actualItemType, ok := commands.ExtractItemCustomID(expectedItemCustomID)
 	assert.True(t, ok, "ExtractItemCustomID should indicate a successful extraction")
+	assert.Equal(t, expectedItemType, actualItemType,
+		"ExtractItemCustomID should return the expected Item type")
 
 	// Bad case
-	ok = commands.ExtractItemCustomID(expectedItemEffectsCustomID)
+	_, ok = commands.ExtractItemCustomID(expectedItemEffectsCustomID)
 	assert.False(t, ok, "ExtractItemCustomID should indicate a failed extraction")
-	ok = commands.ExtractItemCustomID(expectedItemRecipeCustomID)
+	_, ok = commands.ExtractItemCustomID(expectedItemRecipeCustomID)
 	assert.False(t, ok, "ExtractItemCustomID should indicate a failed extraction")
 }
 
 func TestExtractItemEffectsCustomID(t *testing.T) {
 	// Nominal case
-	actualItemID, ok := commands.ExtractItemEffectsCustomID(expectedItemEffectsCustomID)
+	actualItemID, actualItemType, ok := commands.ExtractItemEffectsCustomID(expectedItemEffectsCustomID)
 	assert.True(t, ok,
 		"ExtractItemEffectsCustomID should indicate a successful extraction")
 	assert.Equal(t, expectedItemID, actualItemID,
 		"ExtractItemEffectsCustomID should return the expected Item ID")
+	assert.Equal(t, expectedItemType, actualItemType,
+		"ExtractItemEffectsCustomID should return the expected Item type")
 
 	// Bad case
-	_, ok = commands.ExtractItemEffectsCustomID(expectedItemCustomID)
+	_, _, ok = commands.ExtractItemEffectsCustomID(expectedItemCustomID)
 	assert.False(t, ok, "ExtractItemEffectsCustomID should indicate a failed extraction")
-	_, ok = commands.ExtractItemEffectsCustomID(expectedItemRecipeCustomID)
+	_, _, ok = commands.ExtractItemEffectsCustomID(expectedItemRecipeCustomID)
 	assert.False(t, ok, "ExtractItemEffectsCustomID should indicate a failed extraction")
 }
 
 func TestExtractItemRecipeCustomID(t *testing.T) {
 	// Nominal case
-	actualItemID, ok := commands.ExtractItemRecipeCustomID(expectedItemRecipeCustomID)
+	actualItemID, actualItemType, ok := commands.ExtractItemRecipeCustomID(expectedItemRecipeCustomID)
 	assert.True(t, ok,
 		"ExtractItemRecipeCustomID should indicate a successful extraction")
 	assert.Equal(t, expectedItemID, actualItemID,
 		"ExtractItemRecipeCustomID should return the expected Item ID")
+	assert.Equal(t, expectedItemType, actualItemType,
+		"ExtractItemRecipeCustomID should return the expected Item type")
 
 	// Bad case
-	_, ok = commands.ExtractItemRecipeCustomID(expectedItemCustomID)
+	_, _, ok = commands.ExtractItemRecipeCustomID(expectedItemCustomID)
 	assert.False(t, ok, "ExtractItemRecipeCustomID should indicate a failed extraction")
-	_, ok = commands.ExtractItemRecipeCustomID(expectedItemEffectsCustomID)
+	_, _, ok = commands.ExtractItemRecipeCustomID(expectedItemEffectsCustomID)
 	assert.False(t, ok, "ExtractItemRecipeCustomID should indicate a failed extraction")
 }
 
