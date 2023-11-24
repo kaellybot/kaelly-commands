@@ -3,7 +3,7 @@ module github.com/kaellybot/kaelly-commands
 go 1.20
 
 require (
-	github.com/bwmarrin/discordgo v0.26.1
+	github.com/bwmarrin/discordgo v0.27.1
 	github.com/kaysoro/discordgo-i18n v1.0.2
 	github.com/stretchr/testify v1.8.1
 )
