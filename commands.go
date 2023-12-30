@@ -11,6 +11,7 @@ func GetCommands(localChoices []*discordgo.ApplicationCommandOptionChoice) []*di
 		getAlignUserCommand(),
 		getAlmanaxSlashCommand(),
 		getConfigSlashCommand(localChoices),
+		getHelpSlashCommand(),
 		getItemSlashCommand(),
 		getJobSlashCommand(),
 		getJobUserCommand(),
