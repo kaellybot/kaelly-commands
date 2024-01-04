@@ -17,6 +17,7 @@ const (
 	AlmanaxDurationOptionName = "duration"
 
 	AlmanaxDurationMinimumValue = 1.0
+	AlmanaxDurationDefaultValue = 7.0
 	AlmanaxDurationMaximumValue = 30.0
 )
 
