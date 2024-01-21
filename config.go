@@ -12,12 +12,14 @@ const (
 	ConfigAlmanaxSubCommandName = "almanax"
 	ConfigRSSSubCommandName     = "rss"
 	ConfigServerSubCommandName  = "server"
+	ConfigTwitchSubCommandName  = "twitch"
 	ConfigTwitterSubCommandName = "twitter"
 	ConfigYoutubeSubCommandName = "youtube"
 
 	ConfigServerOptionName   = "server"
 	ConfigChannelOptionName  = "channel"
 	ConfigFeedTypeOptionName = "type"
+	ConfigStreamerOptionName = "streamer"
 	ConfigVideastOptionName  = "videast"
 	ConfigLanguageOptionName = "language"
 	ConfigEnabledOptionName  = "enabled"
@@ -144,6 +146,40 @@ func getConfigSlashCommand(localChoices []*discordgo.ApplicationCommandOptionCho
 							i18n.Vars{"game": constants.GetGame()}),
 						Type:     discordgo.ApplicationCommandOptionChannel,
 						Required: false,
+					},
+				},
+			},
+			{
+				Name:                     ConfigTwitchSubCommandName,
+				Description:              "config.twitch.description",
+				NameLocalizations:        *i18n.GetLocalizations("config.twitch.name"),
+				DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.description"),
+				Type:                     discordgo.ApplicationCommandOptionSubCommand,
+				Options: []*discordgo.ApplicationCommandOption{
+					{
+						Name:                     ConfigEnabledOptionName,
+						Description:              "config.twitch.enabled.description",
+						NameLocalizations:        *i18n.GetLocalizations("config.twitch.enabled.name"),
+						DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.enabled.description"),
+						Type:                     discordgo.ApplicationCommandOptionBoolean,
+						Required:                 true,
+					},
+					{
+						Name:                     ConfigStreamerOptionName,
+						Description:              "config.twitch.streamer.description",
+						NameLocalizations:        *i18n.GetLocalizations("config.twitch.streamer.name"),
+						DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.streamer.description"),
+						Type:                     discordgo.ApplicationCommandOptionString,
+						Required:                 true,
+						Autocomplete:             true,
+					},
+					{
+						Name:                     ConfigChannelOptionName,
+						Description:              "config.twitch.channel.description",
+						NameLocalizations:        *i18n.GetLocalizations("config.twitch.channel.name"),
+						DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.channel.description"),
+						Type:                     discordgo.ApplicationCommandOptionChannel,
+						Required:                 false,
 					},
 				},
 			},
