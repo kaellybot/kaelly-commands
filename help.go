@@ -3,7 +3,6 @@ package commands
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
@@ -14,12 +13,12 @@ import (
 const (
 	HelpCommandName = "help"
 
-	helpPageCustomIDGroups = 3
+	helpPageCustomIDGroups = 2
 )
 
 var (
 	helpCustomID     = regexp.MustCompile(fmt.Sprintf("^/%s$", HelpCommandName))
-	helpPageCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/details\\?page=(\\d+)$", HelpCommandName))
+	helpPageCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/page$", HelpCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -38,24 +37,17 @@ func CraftHelpCustomID() string {
 	return fmt.Sprintf("/%s", HelpCommandName)
 }
 
-func CraftHelpPageCustomID(commandName string, page int) string {
-	return fmt.Sprintf("/%s/%s/details?page=%v", HelpCommandName, commandName, page)
+func CraftHelpPageCustomID(commandName string) string {
+	return fmt.Sprintf("/%s/%s/page", HelpCommandName, commandName)
 }
 
-func ExtractHelpPageCustomID(customID string) (string, int, bool) {
+func ExtractHelpPageCustomID(customID string) (string, bool) {
 	if groups, ok := regex.ExtractCustomID(customID, helpPageCustomID,
 		helpPageCustomIDGroups); ok {
-		commandName := groups[1]
-
-		page, err := strconv.Atoi(groups[2])
-		if err != nil {
-			return "", -1, false
-		}
-
-		return commandName, page, true
+		return groups[1], true
 	}
 
-	return "", -1, false
+	return "", false
 }
 
 func IsBelongsToHelp(customID string) bool {
