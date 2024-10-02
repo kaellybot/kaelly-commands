@@ -10,9 +10,9 @@ import (
 const (
 	expectedItemID              = "123"
 	expectedItemType            = "QUEST_ITEM"
-	expectedItemCustomID        = "/item&type=QUEST_ITEM"
-	expectedItemEffectsCustomID = "/item/123/effects&type=QUEST_ITEM"
-	expectedItemRecipeCustomID  = "/item/123/recipe&type=QUEST_ITEM"
+	expectedItemCustomID        = "/item?type=QUEST_ITEM"
+	expectedItemEffectsCustomID = "/item/123/effects?type=QUEST_ITEM"
+	expectedItemRecipeCustomID  = "/item/123/recipe?type=QUEST_ITEM"
 )
 
 func TestCraftItemCustomID(t *testing.T) {

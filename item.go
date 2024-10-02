@@ -22,9 +22,9 @@ const (
 )
 
 var (
-	itemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s&type=(\\w+)$", ItemCommandName))
-	itemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects&type=(\\w+)$", ItemCommandName))
-	itemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe&type=(\\w+)$", ItemCommandName))
+	itemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s\\?type=(\\w+)$", ItemCommandName))
+	itemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects\\?type=(\\w+)$", ItemCommandName))
+	itemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe\\?type=(\\w+)$", ItemCommandName))
 )
 
 //nolint:exhaustive,lll,funlen
@@ -51,15 +51,15 @@ func getItemSlashCommand() *discordgo.ApplicationCommand {
 }
 
 func CraftItemCustomID(itemType string) string {
-	return fmt.Sprintf("/%s&type=%s", ItemCommandName, itemType)
+	return fmt.Sprintf("/%s?type=%s", ItemCommandName, itemType)
 }
 
 func CraftItemEffectsCustomID(itemID, itemType string) string {
-	return fmt.Sprintf("/%s/%s/effects&type=%s", ItemCommandName, itemID, itemType)
+	return fmt.Sprintf("/%s/%s/effects?type=%s", ItemCommandName, itemID, itemType)
 }
 
 func CraftItemRecipeCustomID(itemID, itemType string) string {
-	return fmt.Sprintf("/%s/%s/recipe&type=%s", ItemCommandName, itemID, itemType)
+	return fmt.Sprintf("/%s/%s/recipe?type=%s", ItemCommandName, itemID, itemType)
 }
 
 func ExtractItemCustomID(customID string) (string, bool) {
