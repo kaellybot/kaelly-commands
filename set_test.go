@@ -14,48 +14,136 @@ const (
 )
 
 func TestCraftSetCustomID(t *testing.T) {
-	actual := commands.CraftSetCustomID(expectedSetID)
-	assert.Equal(t, expectedSetCustomID, actual,
-		"CraftSetCustomID should return the expected set custom ID")
+	tests := []struct {
+		name     string
+		setID    string
+		expected string
+	}{
+		{
+			name:     "CraftSetCustomID returns expected set custom ID",
+			setID:    expectedSetID,
+			expected: expectedSetCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftSetCustomID(tt.setID)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestCraftSetBonusCustomID(t *testing.T) {
-	actual := commands.CraftSetBonusCustomID(expectedSetID)
-	assert.Equal(t, expectedSetBonusCustomID, actual,
-		"CraftSetBonusCustomID should return the expected bonus custom ID")
+	tests := []struct {
+		name     string
+		setID    string
+		expected string
+	}{
+		{
+			name:     "CraftSetBonusCustomID returns expected bonus custom ID",
+			setID:    expectedSetID,
+			expected: expectedSetBonusCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftSetBonusCustomID(tt.setID)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestExtractSetCustomID(t *testing.T) {
-	// Nominal case
-	actualSetID, ok := commands.ExtractSetCustomID(expectedSetCustomID)
-	assert.True(t, ok,
-		"ExtractSetCustomID should indicate a successful extraction")
-	assert.Equal(t, expectedSetID, actualSetID,
-		"ExtractSetCustomID should return the expected set ID")
+	tests := []struct {
+		name     string
+		customID string
+		expected string
+		ok       bool
+	}{
+		{
+			name:     "ExtractSetCustomID successfully extracts set ID",
+			customID: expectedSetCustomID,
+			expected: expectedSetID,
+			ok:       true,
+		},
+		{
+			name:     "ExtractSetCustomID fails on bonus custom ID",
+			customID: expectedSetBonusCustomID,
+			ok:       false,
+		},
+	}
 
-	// Bad case
-	_, ok = commands.ExtractSetCustomID(expectedSetBonusCustomID)
-	assert.False(t, ok, "expectedSetCustomID should indicate a failed extraction")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualSetID, ok := commands.ExtractSetCustomID(tt.customID)
+			assert.Equal(t, tt.ok, ok)
+			if tt.ok {
+				assert.Equal(t, tt.expected, actualSetID)
+			}
+		})
+	}
 }
 
 func TestExtractSetBonusCustomID(t *testing.T) {
-	// Nominal case
-	actualSetID, ok := commands.ExtractSetBonusCustomID(expectedSetBonusCustomID)
-	assert.True(t, ok,
-		"ExtractSetBonusCustomID should indicate a successful extraction")
-	assert.Equal(t, expectedSetID, actualSetID,
-		"ExtractSetBonusCustomID should return the expected set ID")
+	tests := []struct {
+		name     string
+		customID string
+		expected string
+		ok       bool
+	}{
+		{
+			name:     "ExtractSetBonusCustomID successfully extracts set ID",
+			customID: expectedSetBonusCustomID,
+			expected: expectedSetID,
+			ok:       true,
+		},
+		{
+			name:     "ExtractSetBonusCustomID fails on set custom ID",
+			customID: expectedSetCustomID,
+			ok:       false,
+		},
+	}
 
-	// Bad case
-	_, ok = commands.ExtractSetBonusCustomID(expectedSetCustomID)
-	assert.False(t, ok, "ExtractSetBonusCustomID should indicate a failed extraction")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualSetID, ok := commands.ExtractSetBonusCustomID(tt.customID)
+			assert.Equal(t, tt.ok, ok)
+			if tt.ok {
+				assert.Equal(t, tt.expected, actualSetID)
+			}
+		})
+	}
 }
 
 func TestIsBelongsToSet(t *testing.T) {
-	assert.True(t, commands.IsBelongsToSet(expectedSetCustomID),
-		"IsBelongsToSet should return true for a valid set custom ID")
-	assert.True(t, commands.IsBelongsToSet(expectedSetBonusCustomID),
-		"IsBelongsToSet should return true for a valid bonus custom ID")
-	assert.False(t, commands.IsBelongsToSet("/other/123"),
-		"IsBelongsToSet should return false for a custom ID that doesn't belong to a set")
+	tests := []struct {
+		name     string
+		customID string
+		expected bool
+	}{
+		{
+			name:     "IsBelongsToSet returns true for valid set custom ID",
+			customID: expectedSetCustomID,
+			expected: true,
+		},
+		{
+			name:     "IsBelongsToSet returns true for valid bonus custom ID",
+			customID: expectedSetBonusCustomID,
+			expected: true,
+		},
+		{
+			name:     "IsBelongsToSet returns false for invalid custom ID",
+			customID: "/other/123",
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.IsBelongsToSet(tt.customID)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }

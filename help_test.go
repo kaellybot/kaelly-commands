@@ -15,15 +15,43 @@ const (
 )
 
 func TestCraftHelpCustomID(t *testing.T) {
-	actual := commands.CraftHelpCustomID()
-	assert.Equal(t, expectedHelpCustomID, actual,
-		"CraftHelpCustomID should return the expected Item custom ID")
+	tests := []struct {
+		name     string
+		expected string
+	}{
+		{
+			name:     "CraftHelpCustomID returns expected help custom ID",
+			expected: expectedHelpCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftHelpCustomID()
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestCraftHelpPageCustomID(t *testing.T) {
-	actual := commands.CraftHelpPageCustomID(expectedHelpCommandName)
-	assert.Equal(t, expectedHelpPageCustomID, actual,
-		"CraftHelpPageCustomID should return the expected Page custom ID")
+	tests := []struct {
+		name     string
+		command  string
+		expected string
+	}{
+		{
+			name:     "CraftHelpPageCustomID returns expected help page custom ID",
+			command:  expectedHelpCommandName,
+			expected: expectedHelpPageCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftHelpPageCustomID(tt.command)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestExtractHelpPageCustomID(t *testing.T) {

@@ -16,78 +16,210 @@ const (
 )
 
 func TestCraftItemCustomID(t *testing.T) {
-	actual := commands.CraftItemCustomID(expectedItemType)
-	assert.Equal(t, expectedItemCustomID, actual,
-		"CraftItemCustomID should return the expected Item custom ID")
+	tests := []struct {
+		name     string
+		itemType string
+		expected string
+	}{
+		{
+			name:     "CraftItemCustomID returns expected custom ID",
+			itemType: expectedItemType,
+			expected: expectedItemCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftItemCustomID(tt.itemType)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestCraftItemEffectsCustomID(t *testing.T) {
-	actual := commands.CraftItemEffectsCustomID(expectedItemID, expectedItemType)
-	assert.Equal(t, expectedItemEffectsCustomID, actual,
-		"CraftItemEffectsCustomID should return the expected Effects custom ID")
+	tests := []struct {
+		name     string
+		itemID   string
+		itemType string
+		expected string
+	}{
+		{
+			name:     "CraftItemEffectsCustomID returns expected effects custom ID",
+			itemID:   expectedItemID,
+			itemType: expectedItemType,
+			expected: expectedItemEffectsCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftItemEffectsCustomID(tt.itemID, tt.itemType)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestCraftItemRecipeCustomID(t *testing.T) {
-	actual := commands.CraftItemRecipeCustomID(expectedItemID, expectedItemType)
-	assert.Equal(t, expectedItemRecipeCustomID, actual,
-		"CraftItemRecipeCustomID should return the expected Recipe custom ID")
+	tests := []struct {
+		name     string
+		itemID   string
+		itemType string
+		expected string
+	}{
+		{
+			name:     "CraftItemRecipeCustomID returns expected recipe custom ID",
+			itemID:   expectedItemID,
+			itemType: expectedItemType,
+			expected: expectedItemRecipeCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftItemRecipeCustomID(tt.itemID, tt.itemType)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
 }
 
 func TestExtractItemCustomID(t *testing.T) {
-	// Nominal case
-	actualItemType, ok := commands.ExtractItemCustomID(expectedItemCustomID)
-	assert.True(t, ok, "ExtractItemCustomID should indicate a successful extraction")
-	assert.Equal(t, expectedItemType, actualItemType,
-		"ExtractItemCustomID should return the expected Item type")
+	tests := []struct {
+		name           string
+		input          string
+		expectedType   string
+		expectedResult bool
+	}{
+		{
+			name:           "Nominal case",
+			input:          expectedItemCustomID,
+			expectedType:   expectedItemType,
+			expectedResult: true,
+		},
+		{
+			name:  "Bad case (Effects custom ID)",
+			input: expectedItemEffectsCustomID,
+		},
+		{
+			name:  "Bad case (Recipe custom ID)",
+			input: expectedItemRecipeCustomID,
+		},
+	}
 
-	// Bad case
-	_, ok = commands.ExtractItemCustomID(expectedItemEffectsCustomID)
-	assert.False(t, ok, "ExtractItemCustomID should indicate a failed extraction")
-	_, ok = commands.ExtractItemCustomID(expectedItemRecipeCustomID)
-	assert.False(t, ok, "ExtractItemCustomID should indicate a failed extraction")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualItemType, ok := commands.ExtractItemCustomID(tt.input)
+			assert.Equal(t, tt.expectedResult, ok)
+			if ok {
+				assert.Equal(t, tt.expectedType, actualItemType)
+			}
+		})
+	}
 }
 
 func TestExtractItemEffectsCustomID(t *testing.T) {
-	// Nominal case
-	actualItemID, actualItemType, ok := commands.ExtractItemEffectsCustomID(expectedItemEffectsCustomID)
-	assert.True(t, ok,
-		"ExtractItemEffectsCustomID should indicate a successful extraction")
-	assert.Equal(t, expectedItemID, actualItemID,
-		"ExtractItemEffectsCustomID should return the expected Item ID")
-	assert.Equal(t, expectedItemType, actualItemType,
-		"ExtractItemEffectsCustomID should return the expected Item type")
+	tests := []struct {
+		name           string
+		input          string
+		expectedID     string
+		expectedType   string
+		expectedResult bool
+	}{
+		{
+			name:           "Nominal case",
+			input:          expectedItemEffectsCustomID,
+			expectedID:     expectedItemID,
+			expectedType:   expectedItemType,
+			expectedResult: true,
+		},
+		{
+			name:  "Bad case (Custom ID)",
+			input: expectedItemCustomID,
+		},
+		{
+			name:  "Bad case (Recipe custom ID)",
+			input: expectedItemRecipeCustomID,
+		},
+	}
 
-	// Bad case
-	_, _, ok = commands.ExtractItemEffectsCustomID(expectedItemCustomID)
-	assert.False(t, ok, "ExtractItemEffectsCustomID should indicate a failed extraction")
-	_, _, ok = commands.ExtractItemEffectsCustomID(expectedItemRecipeCustomID)
-	assert.False(t, ok, "ExtractItemEffectsCustomID should indicate a failed extraction")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualItemID, actualItemType, ok := commands.ExtractItemEffectsCustomID(tt.input)
+			assert.Equal(t, tt.expectedResult, ok)
+			if ok {
+				assert.Equal(t, tt.expectedID, actualItemID)
+				assert.Equal(t, tt.expectedType, actualItemType)
+			}
+		})
+	}
 }
 
 func TestExtractItemRecipeCustomID(t *testing.T) {
-	// Nominal case
-	actualItemID, actualItemType, ok := commands.ExtractItemRecipeCustomID(expectedItemRecipeCustomID)
-	assert.True(t, ok,
-		"ExtractItemRecipeCustomID should indicate a successful extraction")
-	assert.Equal(t, expectedItemID, actualItemID,
-		"ExtractItemRecipeCustomID should return the expected Item ID")
-	assert.Equal(t, expectedItemType, actualItemType,
-		"ExtractItemRecipeCustomID should return the expected Item type")
+	tests := []struct {
+		name           string
+		input          string
+		expectedID     string
+		expectedType   string
+		expectedResult bool
+	}{
+		{
+			name:           "Nominal case",
+			input:          expectedItemRecipeCustomID,
+			expectedID:     expectedItemID,
+			expectedType:   expectedItemType,
+			expectedResult: true,
+		},
+		{
+			name:  "Bad case (Custom ID)",
+			input: expectedItemCustomID,
+		},
+		{
+			name:  "Bad case (Effects custom ID)",
+			input: expectedItemEffectsCustomID,
+		},
+	}
 
-	// Bad case
-	_, _, ok = commands.ExtractItemRecipeCustomID(expectedItemCustomID)
-	assert.False(t, ok, "ExtractItemRecipeCustomID should indicate a failed extraction")
-	_, _, ok = commands.ExtractItemRecipeCustomID(expectedItemEffectsCustomID)
-	assert.False(t, ok, "ExtractItemRecipeCustomID should indicate a failed extraction")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualItemID, actualItemType, ok := commands.ExtractItemRecipeCustomID(tt.input)
+			assert.Equal(t, tt.expectedResult, ok)
+			if ok {
+				assert.Equal(t, tt.expectedID, actualItemID)
+				assert.Equal(t, tt.expectedType, actualItemType)
+			}
+		})
+	}
 }
 
 func TestIsBelongsToItem(t *testing.T) {
-	assert.True(t, commands.IsBelongsToItem(expectedItemCustomID),
-		"IsBelongsToItem should return true for a valid Item custom ID")
-	assert.True(t, commands.IsBelongsToItem(expectedItemEffectsCustomID),
-		"IsBelongsToItem should return true for a valid Effects custom ID")
-	assert.True(t, commands.IsBelongsToItem(expectedItemRecipeCustomID),
-		"IsBelongsToItem should return true for a valid Recipe custom ID")
-	assert.False(t, commands.IsBelongsToItem("/other/123"),
-		"IsBelongsToItem should return false for a custom ID that doesn't belong to a Item")
+	tests := []struct {
+		name     string
+		input    string
+		expected bool
+	}{
+		{
+			name:     "Valid custom ID",
+			input:    expectedItemCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid effects custom ID",
+			input:    expectedItemEffectsCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid recipe custom ID",
+			input:    expectedItemRecipeCustomID,
+			expected: true,
+		},
+		{
+			name:  "Invalid custom ID",
+			input: "/other/123",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, commands.IsBelongsToItem(tt.input))
+		})
+	}
 }
