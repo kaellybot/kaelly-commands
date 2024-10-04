@@ -15,6 +15,7 @@ func GetCommands(localChoices []*discordgo.ApplicationCommandOptionChoice) []*di
 		getItemSlashCommand(),
 		getJobSlashCommand(),
 		getJobUserCommand(),
+		getMapSlashCommand(),
 		getPosSlashCommand(),
 		getSetSlashCommand(),
 	}
