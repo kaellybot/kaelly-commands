@@ -24,8 +24,8 @@ const (
 )
 
 var (
-	mapNormalCustomID   = regexp.MustCompile(fmt.Sprintf("^/%s/(\\d+)\\?type=normal$", MapCommandName))
-	mapTacticalCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\d+)\\?type=tactical$", MapCommandName))
+	MapNormalCustomID   = regexp.MustCompile(fmt.Sprintf("^/%s/(\\d+)\\?type=normal$", MapCommandName))
+	MapTacticalCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\d+)\\?type=tactical$", MapCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -62,7 +62,7 @@ func CraftMapTacticalCustomID(mapNumber int64) string {
 }
 
 func ExtractMapNormalCustomID(customID string) (int64, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, mapNormalCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, MapNormalCustomID,
 		mapNormalCustomIDGroups); ok {
 		mapNumber, err := strconv.Atoi(groups[1])
 		if err != nil {
@@ -75,7 +75,7 @@ func ExtractMapNormalCustomID(customID string) (int64, bool) {
 }
 
 func ExtractMapTacticalCustomID(customID string) (int64, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, mapTacticalCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, MapTacticalCustomID,
 		mapTacticalCustomIDGroups); ok {
 		mapNumber, err := strconv.Atoi(groups[1])
 		if err != nil {
@@ -88,5 +88,5 @@ func ExtractMapTacticalCustomID(customID string) (int64, bool) {
 }
 
 func IsBelongsToMap(customID string) bool {
-	return regex.IsBelongTo(customID, mapNormalCustomID, mapTacticalCustomID)
+	return regex.IsBelongTo(customID, MapNormalCustomID, MapTacticalCustomID)
 }

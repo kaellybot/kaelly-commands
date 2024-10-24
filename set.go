@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	setCustomID      = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)$", SetCommandName))
-	setBonusCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/bonuses$", SetCommandName))
+	SetCustomID      = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)$", SetCommandName))
+	SetBonusCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/bonuses$", SetCommandName))
 )
 
 //nolint:exhaustive,lll,funlen
@@ -57,7 +57,7 @@ func CraftSetBonusCustomID(setID string) string {
 }
 
 func ExtractSetCustomID(customID string) (string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, setCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, SetCustomID,
 		setCustomIDGroups); ok {
 		return groups[1], true
 	}
@@ -66,7 +66,7 @@ func ExtractSetCustomID(customID string) (string, bool) {
 }
 
 func ExtractSetBonusCustomID(customID string) (string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, setBonusCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, SetBonusCustomID,
 		setBonusCustomIDGroups); ok {
 		return groups[1], true
 	}
@@ -75,5 +75,5 @@ func ExtractSetBonusCustomID(customID string) (string, bool) {
 }
 
 func IsBelongsToSet(customID string) bool {
-	return regex.IsBelongTo(customID, setCustomID, setBonusCustomID)
+	return regex.IsBelongTo(customID, SetCustomID, SetBonusCustomID)
 }

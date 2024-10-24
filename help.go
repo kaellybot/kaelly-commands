@@ -17,8 +17,8 @@ const (
 )
 
 var (
-	helpCustomID     = regexp.MustCompile(fmt.Sprintf("^/%s$", HelpCommandName))
-	helpPageCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/page$", HelpCommandName))
+	HelpCustomID     = regexp.MustCompile(fmt.Sprintf("^/%s$", HelpCommandName))
+	HelpPageCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/page$", HelpCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -42,7 +42,7 @@ func CraftHelpPageCustomID(commandName string) string {
 }
 
 func ExtractHelpPageCustomID(customID string) (string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, helpPageCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, HelpPageCustomID,
 		helpPageCustomIDGroups); ok {
 		return groups[1], true
 	}
@@ -51,5 +51,5 @@ func ExtractHelpPageCustomID(customID string) (string, bool) {
 }
 
 func IsBelongsToHelp(customID string) bool {
-	return regex.IsBelongTo(customID, helpCustomID, helpPageCustomID)
+	return regex.IsBelongTo(customID, HelpCustomID, HelpPageCustomID)
 }

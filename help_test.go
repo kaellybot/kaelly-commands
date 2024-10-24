@@ -1,9 +1,8 @@
-package commands_test
+package commands
 
 import (
 	"testing"
 
-	commands "github.com/kaellybot/kaelly-commands"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +26,7 @@ func TestCraftHelpCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftHelpCustomID()
+			actual := CraftHelpCustomID()
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -48,7 +47,7 @@ func TestCraftHelpPageCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftHelpPageCustomID(tt.command)
+			actual := CraftHelpPageCustomID(tt.command)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -75,7 +74,7 @@ func TestExtractHelpPageCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			commandName, ok := commands.ExtractHelpPageCustomID(tt.customID)
+			commandName, ok := ExtractHelpPageCustomID(tt.customID)
 			if tt.succeeded {
 				assert.True(t, ok)
 				assert.Equal(t, tt.expectedCommand, commandName)

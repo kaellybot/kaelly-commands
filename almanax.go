@@ -1,8 +1,14 @@
 package commands
 
 import (
+	"fmt"
+	"regexp"
+	"strconv"
+	"time"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
+	"github.com/kaellybot/kaelly-commands/utils/regex"
 	i18n "github.com/kaysoro/discordgo-i18n"
 )
 
@@ -19,6 +25,12 @@ const (
 	AlmanaxDurationMinimumValue = 1.0
 	AlmanaxDurationDefaultValue = 7.0
 	AlmanaxDurationMaximumValue = 30.0
+
+	almanaxDayCustomIDGroups = 2
+)
+
+var (
+	AlmanaxDayCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
@@ -88,4 +100,27 @@ func getAlmanaxSlashCommand() *discordgo.ApplicationCommand {
 			},
 		},
 	}
+}
+
+func CraftAlmanaxDayCustomID(date time.Time) string {
+	return fmt.Sprintf("/%s/day/%v", AlmanaxCommandName, date.Unix())
+}
+
+func ExtractAlmanaxDayCustomID(customID string) (*time.Time, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, AlmanaxDayCustomID,
+		almanaxDayCustomIDGroups); ok {
+		seconds, err := strconv.ParseInt(groups[1], 10, 64)
+		if err != nil {
+			return nil, false
+		}
+
+		day := time.Unix(seconds, 0).UTC()
+		return &day, true
+	}
+
+	return nil, false
+}
+
+func IsBelongsToAlmanax(customID string) bool {
+	return regex.IsBelongTo(customID, AlmanaxDayCustomID)
 }

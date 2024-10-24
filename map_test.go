@@ -1,9 +1,8 @@
-package commands_test
+package commands
 
 import (
 	"testing"
 
-	commands "github.com/kaellybot/kaelly-commands"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,7 +28,7 @@ func TestCraftMapNormalCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftMapNormalCustomID(tt.mapNumber)
+			actual := CraftMapNormalCustomID(tt.mapNumber)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -50,7 +49,7 @@ func TestCraftMapTacticalCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftMapTacticalCustomID(tt.mapNumber)
+			actual := CraftMapTacticalCustomID(tt.mapNumber)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -81,7 +80,7 @@ func TestExtractMapNormalCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mapNumber, ok := commands.ExtractMapNormalCustomID(tt.customID)
+			mapNumber, ok := ExtractMapNormalCustomID(tt.customID)
 			if tt.succeeded {
 				assert.True(t, ok)
 				assert.Equal(t, tt.expectedMapNumber, mapNumber)
@@ -117,7 +116,7 @@ func TestExtractMapTacticalCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mapNumber, ok := commands.ExtractMapTacticalCustomID(tt.customID)
+			mapNumber, ok := ExtractMapTacticalCustomID(tt.customID)
 			if tt.succeeded {
 				assert.True(t, ok)
 				assert.Equal(t, tt.expectedMapNumber, mapNumber)
@@ -152,7 +151,7 @@ func TestIsBelongsToMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expected, commands.IsBelongsToMap(tt.input))
+			assert.Equal(t, tt.expected, IsBelongsToMap(tt.input))
 		})
 	}
 }

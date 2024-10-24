@@ -22,9 +22,9 @@ const (
 )
 
 var (
-	itemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s\\?type=(\\w+)$", ItemCommandName))
-	itemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects\\?type=(\\w+)$", ItemCommandName))
-	itemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe\\?type=(\\w+)$", ItemCommandName))
+	ItemCustomID        = regexp.MustCompile(fmt.Sprintf("^/%s\\?type=(\\w+)$", ItemCommandName))
+	ItemEffectsCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/effects\\?type=(\\w+)$", ItemCommandName))
+	ItemRecipeCustomID  = regexp.MustCompile(fmt.Sprintf("^/%s/(\\w+)/recipe\\?type=(\\w+)$", ItemCommandName))
 )
 
 //nolint:exhaustive,lll,funlen
@@ -63,7 +63,7 @@ func CraftItemRecipeCustomID(itemID, itemType string) string {
 }
 
 func ExtractItemCustomID(customID string) (string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, itemCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, ItemCustomID,
 		itemCustomIDGroups); ok {
 		return groups[1], true
 	}
@@ -72,7 +72,7 @@ func ExtractItemCustomID(customID string) (string, bool) {
 }
 
 func ExtractItemEffectsCustomID(customID string) (string, string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, itemEffectsCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, ItemEffectsCustomID,
 		itemEffectsCustomIDGroups); ok {
 		return groups[1], groups[2], true
 	}
@@ -81,7 +81,7 @@ func ExtractItemEffectsCustomID(customID string) (string, string, bool) {
 }
 
 func ExtractItemRecipeCustomID(customID string) (string, string, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, itemRecipeCustomID,
+	if groups, ok := regex.ExtractCustomID(customID, ItemRecipeCustomID,
 		itemRecipeCustomIDGroups); ok {
 		return groups[1], groups[2], true
 	}
@@ -90,6 +90,6 @@ func ExtractItemRecipeCustomID(customID string) (string, string, bool) {
 }
 
 func IsBelongsToItem(customID string) bool {
-	return regex.IsBelongTo(customID, itemCustomID,
-		itemEffectsCustomID, itemRecipeCustomID)
+	return regex.IsBelongTo(customID, ItemCustomID,
+		ItemEffectsCustomID, ItemRecipeCustomID)
 }
