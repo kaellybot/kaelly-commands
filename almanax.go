@@ -26,11 +26,15 @@ const (
 	AlmanaxDurationDefaultValue = 7.0
 	AlmanaxDurationMaximumValue = 30.0
 
-	almanaxDayCustomIDGroups = 2
+	almanaxDayCustomIDGroups      = 2
+	almanaxResourceCustomIDGroups = 3
 )
 
 var (
-	AlmanaxDayCustomID = regexp.MustCompile(fmt.Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
+	AlmanaxDayCustomID = regexp.
+				MustCompile(fmt.Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
+	AlmanaxResourceCustomID = regexp.
+				MustCompile(fmt.Sprintf("^/%s/resource\\?startDate=(\\d+)&endDate=(\\d+)$", AlmanaxCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
@@ -121,6 +125,33 @@ func ExtractAlmanaxDayCustomID(customID string) (*time.Time, bool) {
 	return nil, false
 }
 
+func CraftAlmanaxResourceCustomID(startDate, endDate time.Time) string {
+	return fmt.Sprintf("/%s/resource?startDate=%v&endDate=%v",
+		AlmanaxCommandName, startDate.Unix(), endDate.Unix())
+}
+
+func ExtractAlmanaxResourceCustomID(customID string) (*time.Time, *time.Time, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, AlmanaxResourceCustomID,
+		almanaxResourceCustomIDGroups); ok {
+		startSeconds, err := strconv.ParseInt(groups[1], 10, 64)
+		if err != nil {
+			return nil, nil, false
+		}
+
+		endSeconds, err := strconv.ParseInt(groups[2], 10, 64)
+		if err != nil {
+			return nil, nil, false
+		}
+
+		startDate := time.Unix(startSeconds, 0).UTC()
+		endDate := time.Unix(endSeconds, 0).UTC()
+		return &startDate, &endDate, true
+	}
+
+	return nil, nil, false
+}
+
 func IsBelongsToAlmanax(customID string) bool {
-	return regex.IsBelongTo(customID, AlmanaxDayCustomID)
+	return regex.IsBelongTo(customID, AlmanaxDayCustomID,
+		AlmanaxResourceCustomID)
 }

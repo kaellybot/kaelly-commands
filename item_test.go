@@ -1,8 +1,9 @@
-package commands
+package commands_test
 
 import (
 	"testing"
 
+	commands "github.com/kaellybot/kaelly-commands"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,7 +30,7 @@ func TestCraftItemCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := CraftItemCustomID(tt.itemType)
+			actual := commands.CraftItemCustomID(tt.itemType)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -52,7 +53,7 @@ func TestCraftItemEffectsCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := CraftItemEffectsCustomID(tt.itemID, tt.itemType)
+			actual := commands.CraftItemEffectsCustomID(tt.itemID, tt.itemType)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -75,7 +76,7 @@ func TestCraftItemRecipeCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := CraftItemRecipeCustomID(tt.itemID, tt.itemType)
+			actual := commands.CraftItemRecipeCustomID(tt.itemID, tt.itemType)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
@@ -106,7 +107,7 @@ func TestExtractItemCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actualItemType, ok := ExtractItemCustomID(tt.input)
+			actualItemType, ok := commands.ExtractItemCustomID(tt.input)
 			assert.Equal(t, tt.expectedResult, ok)
 			if ok {
 				assert.Equal(t, tt.expectedType, actualItemType)
@@ -142,7 +143,7 @@ func TestExtractItemEffectsCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actualItemID, actualItemType, ok := ExtractItemEffectsCustomID(tt.input)
+			actualItemID, actualItemType, ok := commands.ExtractItemEffectsCustomID(tt.input)
 			assert.Equal(t, tt.expectedResult, ok)
 			if ok {
 				assert.Equal(t, tt.expectedID, actualItemID)
@@ -179,7 +180,7 @@ func TestExtractItemRecipeCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actualItemID, actualItemType, ok := ExtractItemRecipeCustomID(tt.input)
+			actualItemID, actualItemType, ok := commands.ExtractItemRecipeCustomID(tt.input)
 			assert.Equal(t, tt.expectedResult, ok)
 			if ok {
 				assert.Equal(t, tt.expectedID, actualItemID)
@@ -218,7 +219,7 @@ func TestIsBelongsToItem(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expected, IsBelongsToItem(tt.input))
+			assert.Equal(t, tt.expected, commands.IsBelongsToItem(tt.input))
 		})
 	}
 }
