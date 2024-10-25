@@ -9,16 +9,16 @@ import (
 )
 
 const (
-	expectedAlmanaxDayCustomID      = "/almanax/day/761702400"
-	expectedAlmanaxResourceCustomID = "/almanax/resource?startDate=761702400&endDate=761788800"
+	expectedAlmanaxDayCustomID               = "/almanax/day/761702400"
+	expectedAlmanaxResourceCharacterCustomID = "/almanax/resource?duration=30"
+	expectedAlmanaxResourceDurationCustomID  = "/almanax/resource?characters=8"
+
+	expectedCharacters = 8
+	expectedDuration   = 30
 )
 
 func getExpectedDate() time.Time {
 	return time.Date(1994, time.February, 20, 0, 0, 0, 0, time.UTC)
-}
-
-func getExpectedEndDate() time.Time {
-	return time.Date(1994, time.February, 21, 0, 0, 0, 0, time.UTC)
 }
 
 func TestCraftAlmanaxDayCustomID(t *testing.T) {
@@ -52,7 +52,11 @@ func TestExtractAlmanaxDayCustomID(t *testing.T) {
 	}{
 		{
 			name:     "AlmanaxDayCustomID could not be extracted",
-			customID: expectedAlmanaxResourceCustomID,
+			customID: expectedAlmanaxResourceCharacterCustomID,
+		},
+		{
+			name:     "AlmanaxDayCustomID could not be extracted",
+			customID: expectedAlmanaxResourceDurationCustomID,
 		},
 		{
 			name:     "AlmanaxDayCustomID could not be converted",
@@ -79,67 +83,121 @@ func TestExtractAlmanaxDayCustomID(t *testing.T) {
 	}
 }
 
-func TestCraftAlmanaxResourceCustomID(t *testing.T) {
+func TestCraftAlmanaxResourceCharacterCustomID(t *testing.T) {
 	tests := []struct {
-		name      string
-		expected  string
-		startDate time.Time
-		endDate   time.Time
+		name     string
+		expected string
+		duration int64
 	}{
 		{
-			name:      "CraftAlmanaxResourceCustomID returns expected time custom ID",
-			startDate: getExpectedDate(),
-			endDate:   getExpectedEndDate(),
-			expected:  expectedAlmanaxResourceCustomID,
+			name:     "CraftAlmanaxResourceCharacterCustomID returns expected custom ID",
+			duration: expectedDuration,
+			expected: expectedAlmanaxResourceCharacterCustomID,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftAlmanaxResourceCustomID(tt.startDate, tt.endDate)
+			actual := commands.CraftAlmanaxResourceCharacterCustomID(tt.duration)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
 }
 
-func TestExtractAlmanaxResourceCustomID(t *testing.T) {
-	expectedDate := getExpectedDate()
-	expectedEndDate := getExpectedEndDate()
+func TestExtractAlmanaxResourceCharacterCustomID(t *testing.T) {
 	tests := []struct {
-		name              string
-		customID          string
-		expectedStartDate *time.Time
-		expectedEndDate   *time.Time
-		succeeded         bool
+		name             string
+		customID         string
+		expectedDuration int64
+		succeeded        bool
 	}{
 		{
-			name:     "AlmanaxResourceCustomID could not be extracted",
+			name:     "AlmanaxResourceCharacterCustomID could not be extracted",
 			customID: expectedAlmanaxDayCustomID,
 		},
 		{
-			name:     "AlmanaxResourceCustomID could not be converted",
-			customID: "/almanax/resource?startDate=9999999999999999999&endDate=123",
+			name:     "AlmanaxResourceCharacterCustomID could not be extracted",
+			customID: expectedAlmanaxResourceDurationCustomID,
 		},
 		{
-			name:     "AlmanaxResourceCustomID could not be converted 2",
-			customID: "/almanax/resource?startDate=123&endDate=9999999999999999999",
+			name:     "AlmanaxResourceCharacterCustomID could not be converted",
+			customID: "/almanax/resource?duration=9999999999999999999",
 		},
 		{
-			name:              "AlmanaxResourceCustomID nominal case",
-			customID:          expectedAlmanaxResourceCustomID,
-			expectedStartDate: &expectedDate,
-			expectedEndDate:   &expectedEndDate,
-			succeeded:         true,
+			name:             "AlmanaxResourceCharacterCustomID nominal case",
+			customID:         expectedAlmanaxResourceCharacterCustomID,
+			expectedDuration: expectedDuration,
+			succeeded:        true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			startDate, endDate, ok := commands.ExtractAlmanaxResourceCustomID(tt.customID)
+			duration, ok := commands.ExtractAlmanaxResourceCharacterCustomID(tt.customID)
 			if tt.succeeded {
 				assert.True(t, ok)
-				assert.Equal(t, tt.expectedStartDate, startDate)
-				assert.Equal(t, tt.expectedEndDate, endDate)
+				assert.Equal(t, tt.expectedDuration, duration)
+			} else {
+				assert.False(t, ok)
+			}
+		})
+	}
+}
+
+func TestCraftAlmanaxResourceDurationCustomID(t *testing.T) {
+	tests := []struct {
+		name            string
+		expected        string
+		characterNumber int64
+	}{
+		{
+			name:            "CraftAlmanaxResourceDurationCustomID returns expected custom ID",
+			characterNumber: expectedCharacters,
+			expected:        expectedAlmanaxResourceDurationCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftAlmanaxResourceDurationCustomID(tt.characterNumber)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}
+
+func TestExtractAlmanaxResourceDurationCustomID(t *testing.T) {
+	tests := []struct {
+		name               string
+		customID           string
+		expectedCharacters int64
+		succeeded          bool
+	}{
+		{
+			name:     "AlmanaxResourceDurationCustomID could not be extracted",
+			customID: expectedAlmanaxDayCustomID,
+		},
+		{
+			name:     "AlmanaxResourceDurationCustomID could not be extracted",
+			customID: expectedAlmanaxResourceCharacterCustomID,
+		},
+		{
+			name:     "AlmanaxResourceDurationCustomID could not be converted",
+			customID: "/almanax/resource?characters=9999999999999999999",
+		},
+		{
+			name:               "AlmanaxResourceDurationCustomID nominal case",
+			customID:           expectedAlmanaxResourceDurationCustomID,
+			expectedCharacters: expectedCharacters,
+			succeeded:          true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			duration, ok := commands.ExtractAlmanaxResourceDurationCustomID(tt.customID)
+			if tt.succeeded {
+				assert.True(t, ok)
+				assert.Equal(t, tt.expectedCharacters, duration)
 			} else {
 				assert.False(t, ok)
 			}
@@ -160,7 +218,12 @@ func TestIsBelongsToAlmanax(t *testing.T) {
 		},
 		{
 			name:     "Valid almanax resource custom ID",
-			input:    expectedAlmanaxResourceCustomID,
+			input:    expectedAlmanaxResourceCharacterCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid almanax resource custom ID",
+			input:    expectedAlmanaxResourceDurationCustomID,
 			expected: true,
 		},
 		{
