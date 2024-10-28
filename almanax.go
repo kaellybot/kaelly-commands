@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"encoding/base64"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -37,7 +36,7 @@ var (
 	AlmanaxDayCustomID = regexp.MustCompile(fmt.
 				Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
 	AlmanaxEffectCustomID = regexp.MustCompile(fmt.
-				Sprintf("^/%s/effect\\?query=([-A-Za-z0-9+/]*={0,3})&page=(\\d+)$", AlmanaxCommandName))
+				Sprintf("^/%s/effect\\?date=(\\d+)&page=(\\d+)$", AlmanaxCommandName))
 	AlmanaxResourceDurationCustomID = regexp.MustCompile(fmt.
 					Sprintf("^/%s/resource\\?characters=(\\d+)$", AlmanaxCommandName))
 	AlmanaxResourceCharacterCustomID = regexp.MustCompile(fmt.
@@ -132,28 +131,29 @@ func ExtractAlmanaxDayCustomID(customID string) (*time.Time, bool) {
 	return nil, false
 }
 
-func CraftAlmanaxEffectCustomID(query string, page int) string {
-	base64Query := base64.StdEncoding.EncodeToString([]byte(query))
-	return fmt.Sprintf("/%s/effect?query=%v&page=%v", AlmanaxCommandName, base64Query, page)
+func CraftAlmanaxEffectCustomID(date time.Time, page int) string {
+	return fmt.Sprintf("/%s/effect?date=%v&page=%v", AlmanaxCommandName, date.Unix(), page)
 }
 
-func ExtractAlmanaxEffectCustomID(customID string) (string, int, bool) {
+func ExtractAlmanaxEffectCustomID(customID string) (*time.Time, int, bool) {
 	if groups, ok := regex.ExtractCustomID(customID, AlmanaxEffectCustomID,
 		almanaxEffectCustomIDGroups); ok {
-		query, errDecode := base64.StdEncoding.DecodeString(groups[1])
-		if errDecode != nil {
-			return "", -1, false
+		seconds, err := strconv.ParseInt(groups[1], 10, 64)
+		if err != nil {
+			return nil, -1, false
 		}
+
+		day := time.Unix(seconds, 0).UTC()
 
 		page, errConv := strconv.Atoi(groups[2])
 		if errConv != nil {
-			return "", -1, false
+			return nil, -1, false
 		}
 
-		return string(query), page, true
+		return &day, page, true
 	}
 
-	return "", -1, false
+	return nil, -1, false
 }
 
 func CraftAlmanaxResourceDurationCustomID(characterNumber int64) string {

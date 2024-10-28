@@ -10,11 +10,10 @@ import (
 
 const (
 	expectedAlmanaxDayCustomID               = "/almanax/day/761702400"
-	expectedAlmanaxEffectCustomID            = "/almanax/effect?query=UG9pbnRzIGQnZXhww6lyaWVuY2U=&page=2"
+	expectedAlmanaxEffectCustomID            = "/almanax/effect?date=761702400&page=2"
 	expectedAlmanaxResourceCharacterCustomID = "/almanax/resource?duration=30"
 	expectedAlmanaxResourceDurationCustomID  = "/almanax/resource?characters=8"
 
-	expectedAlmanaxQuery      = "Points d'expérience"
 	expectedAlmanaxPage       = 2
 	expectedAlmanaxCharacters = 8
 	expectedAlmanaxDuration   = 30
@@ -93,13 +92,13 @@ func TestExtractAlmanaxDayCustomID(t *testing.T) {
 func TestCraftAlmanaxEffectCustomID(t *testing.T) {
 	tests := []struct {
 		name     string
-		query    string
+		date     time.Time
 		page     int
 		expected string
 	}{
 		{
 			name:     "CraftAlmanaxEffectCustomID returns expected custom ID",
-			query:    expectedAlmanaxQuery,
+			date:     getExpectedDate(),
 			page:     expectedAlmanaxPage,
 			expected: expectedAlmanaxEffectCustomID,
 		},
@@ -107,19 +106,20 @@ func TestCraftAlmanaxEffectCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftAlmanaxEffectCustomID(tt.query, tt.page)
+			actual := commands.CraftAlmanaxEffectCustomID(tt.date, tt.page)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
 }
 
 func TestExtractAlmanaxEffectCustomID(t *testing.T) {
+	expectedDate := getExpectedDate()
 	tests := []struct {
-		name          string
-		customID      string
-		expectedQuery string
-		expectedPage  int
-		succeeded     bool
+		name         string
+		customID     string
+		expectedDate *time.Time
+		expectedPage int
+		succeeded    bool
 	}{
 		{
 			name:     "AlmanaxEffectCustomID could not be extracted",
@@ -135,27 +135,27 @@ func TestExtractAlmanaxEffectCustomID(t *testing.T) {
 		},
 		{
 			name:     "AlmanaxEffectCustomID could not be converted",
-			customID: "/almanax/effect?query=blabla&page=2",
+			customID: "/almanax/effect?query=9999999999999999999&page=2",
 		},
 		{
 			name:     "AlmanaxEffectCustomID could not be converted",
-			customID: "/almanax/effect?query=UG9pbnRzIGQnZXhww6lyaWVuY2U=&page=9999999999999999999",
+			customID: "/almanax/effect?query=761702400=&page=9999999999999999999",
 		},
 		{
-			name:          "AlmanaxEffectCustomID nominal case",
-			customID:      expectedAlmanaxEffectCustomID,
-			expectedQuery: expectedAlmanaxQuery,
-			expectedPage:  expectedAlmanaxPage,
-			succeeded:     true,
+			name:         "AlmanaxEffectCustomID nominal case",
+			customID:     expectedAlmanaxEffectCustomID,
+			expectedDate: &expectedDate,
+			expectedPage: expectedAlmanaxPage,
+			succeeded:    true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			query, page, ok := commands.ExtractAlmanaxEffectCustomID(tt.customID)
+			date, page, ok := commands.ExtractAlmanaxEffectCustomID(tt.customID)
 			if tt.succeeded {
 				assert.True(t, ok)
-				assert.Equal(t, tt.expectedQuery, query)
+				assert.Equal(t, tt.expectedDate, date)
 				assert.Equal(t, tt.expectedPage, page)
 			} else {
 				assert.False(t, ok)
