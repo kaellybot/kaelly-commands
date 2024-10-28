@@ -10,11 +10,14 @@ import (
 
 const (
 	expectedAlmanaxDayCustomID               = "/almanax/day/761702400"
+	expectedAlmanaxEffectCustomID            = "/almanax/effect?query=UG9pbnRzIGQnZXhww6lyaWVuY2U=&page=2"
 	expectedAlmanaxResourceCharacterCustomID = "/almanax/resource?duration=30"
 	expectedAlmanaxResourceDurationCustomID  = "/almanax/resource?characters=8"
 
-	expectedCharacters = 8
-	expectedDuration   = 30
+	expectedAlmanaxQuery      = "Points d'expérience"
+	expectedAlmanaxPage       = 2
+	expectedAlmanaxCharacters = 8
+	expectedAlmanaxDuration   = 30
 )
 
 func getExpectedDate() time.Time {
@@ -52,6 +55,10 @@ func TestExtractAlmanaxDayCustomID(t *testing.T) {
 	}{
 		{
 			name:     "AlmanaxDayCustomID could not be extracted",
+			customID: expectedAlmanaxEffectCustomID,
+		},
+		{
+			name:     "AlmanaxDayCustomID could not be extracted",
 			customID: expectedAlmanaxResourceCharacterCustomID,
 		},
 		{
@@ -83,6 +90,80 @@ func TestExtractAlmanaxDayCustomID(t *testing.T) {
 	}
 }
 
+func TestCraftAlmanaxEffectCustomID(t *testing.T) {
+	tests := []struct {
+		name     string
+		query    string
+		page     int
+		expected string
+	}{
+		{
+			name:     "CraftAlmanaxEffectCustomID returns expected custom ID",
+			query:    expectedAlmanaxQuery,
+			page:     expectedAlmanaxPage,
+			expected: expectedAlmanaxEffectCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftAlmanaxEffectCustomID(tt.query, tt.page)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}
+
+func TestExtractAlmanaxEffectCustomID(t *testing.T) {
+	tests := []struct {
+		name          string
+		customID      string
+		expectedQuery string
+		expectedPage  int
+		succeeded     bool
+	}{
+		{
+			name:     "AlmanaxEffectCustomID could not be extracted",
+			customID: expectedAlmanaxDayCustomID,
+		},
+		{
+			name:     "AlmanaxEffectCustomID could not be extracted",
+			customID: expectedAlmanaxResourceCharacterCustomID,
+		},
+		{
+			name:     "AlmanaxEffectCustomID could not be extracted",
+			customID: expectedAlmanaxResourceDurationCustomID,
+		},
+		{
+			name:     "AlmanaxEffectCustomID could not be converted",
+			customID: "/almanax/effect?query=blabla&page=2",
+		},
+		{
+			name:     "AlmanaxEffectCustomID could not be converted",
+			customID: "/almanax/effect?query=UG9pbnRzIGQnZXhww6lyaWVuY2U=&page=9999999999999999999",
+		},
+		{
+			name:          "AlmanaxEffectCustomID nominal case",
+			customID:      expectedAlmanaxEffectCustomID,
+			expectedQuery: expectedAlmanaxQuery,
+			expectedPage:  expectedAlmanaxPage,
+			succeeded:     true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			query, page, ok := commands.ExtractAlmanaxEffectCustomID(tt.customID)
+			if tt.succeeded {
+				assert.True(t, ok)
+				assert.Equal(t, tt.expectedQuery, query)
+				assert.Equal(t, tt.expectedPage, page)
+			} else {
+				assert.False(t, ok)
+			}
+		})
+	}
+}
+
 func TestCraftAlmanaxResourceCharacterCustomID(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -91,7 +172,7 @@ func TestCraftAlmanaxResourceCharacterCustomID(t *testing.T) {
 	}{
 		{
 			name:     "CraftAlmanaxResourceCharacterCustomID returns expected custom ID",
-			duration: expectedDuration,
+			duration: expectedAlmanaxDuration,
 			expected: expectedAlmanaxResourceCharacterCustomID,
 		},
 	}
@@ -116,6 +197,10 @@ func TestExtractAlmanaxResourceCharacterCustomID(t *testing.T) {
 			customID: expectedAlmanaxDayCustomID,
 		},
 		{
+			name:     "AlmanaxDayCustomID could not be extracted",
+			customID: expectedAlmanaxEffectCustomID,
+		},
+		{
 			name:     "AlmanaxResourceCharacterCustomID could not be extracted",
 			customID: expectedAlmanaxResourceDurationCustomID,
 		},
@@ -126,7 +211,7 @@ func TestExtractAlmanaxResourceCharacterCustomID(t *testing.T) {
 		{
 			name:             "AlmanaxResourceCharacterCustomID nominal case",
 			customID:         expectedAlmanaxResourceCharacterCustomID,
-			expectedDuration: expectedDuration,
+			expectedDuration: expectedAlmanaxDuration,
 			succeeded:        true,
 		},
 	}
@@ -152,7 +237,7 @@ func TestCraftAlmanaxResourceDurationCustomID(t *testing.T) {
 	}{
 		{
 			name:            "CraftAlmanaxResourceDurationCustomID returns expected custom ID",
-			characterNumber: expectedCharacters,
+			characterNumber: expectedAlmanaxCharacters,
 			expected:        expectedAlmanaxResourceDurationCustomID,
 		},
 	}
@@ -177,6 +262,10 @@ func TestExtractAlmanaxResourceDurationCustomID(t *testing.T) {
 			customID: expectedAlmanaxDayCustomID,
 		},
 		{
+			name:     "AlmanaxDayCustomID could not be extracted",
+			customID: expectedAlmanaxEffectCustomID,
+		},
+		{
 			name:     "AlmanaxResourceDurationCustomID could not be extracted",
 			customID: expectedAlmanaxResourceCharacterCustomID,
 		},
@@ -187,7 +276,7 @@ func TestExtractAlmanaxResourceDurationCustomID(t *testing.T) {
 		{
 			name:               "AlmanaxResourceDurationCustomID nominal case",
 			customID:           expectedAlmanaxResourceDurationCustomID,
-			expectedCharacters: expectedCharacters,
+			expectedCharacters: expectedAlmanaxCharacters,
 			succeeded:          true,
 		},
 	}
@@ -214,6 +303,11 @@ func TestIsBelongsToAlmanax(t *testing.T) {
 		{
 			name:     "Valid almanax day custom ID",
 			input:    expectedAlmanaxDayCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid almanax effect custom ID",
+			input:    expectedAlmanaxEffectCustomID,
 			expected: true,
 		},
 		{

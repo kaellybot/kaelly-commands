@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"encoding/base64"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -27,17 +28,20 @@ const (
 	AlmanaxDurationMaximumValue = 30.0
 
 	almanaxDayCustomIDGroups               = 2
+	almanaxEffectCustomIDGroups            = 3
 	almanaxResourceCharacterCustomIDGroups = 2
 	almanaxResourceDurationCustomIDGroups  = 2
 )
 
 var (
-	AlmanaxDayCustomID = regexp.
-				MustCompile(fmt.Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
-	AlmanaxResourceDurationCustomID = regexp.
-					MustCompile(fmt.Sprintf("^/%s/resource\\?characters=(\\d+)$", AlmanaxCommandName))
-	AlmanaxResourceCharacterCustomID = regexp.
-						MustCompile(fmt.Sprintf("^/%s/resource\\?duration=(\\d+)$", AlmanaxCommandName))
+	AlmanaxDayCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
+	AlmanaxEffectCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/%s/effect\\?query=([-A-Za-z0-9+/]*={0,3})&page=(\\d+)$", AlmanaxCommandName))
+	AlmanaxResourceDurationCustomID = regexp.MustCompile(fmt.
+					Sprintf("^/%s/resource\\?characters=(\\d+)$", AlmanaxCommandName))
+	AlmanaxResourceCharacterCustomID = regexp.MustCompile(fmt.
+						Sprintf("^/%s/resource\\?duration=(\\d+)$", AlmanaxCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
@@ -128,6 +132,30 @@ func ExtractAlmanaxDayCustomID(customID string) (*time.Time, bool) {
 	return nil, false
 }
 
+func CraftAlmanaxEffectCustomID(query string, page int) string {
+	base64Query := base64.StdEncoding.EncodeToString([]byte(query))
+	return fmt.Sprintf("/%s/effect?query=%v&page=%v", AlmanaxCommandName, base64Query, page)
+}
+
+func ExtractAlmanaxEffectCustomID(customID string) (string, int, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, AlmanaxEffectCustomID,
+		almanaxEffectCustomIDGroups); ok {
+		query, errDecode := base64.StdEncoding.DecodeString(groups[1])
+		if errDecode != nil {
+			return "", -1, false
+		}
+
+		page, errConv := strconv.Atoi(groups[2])
+		if errConv != nil {
+			return "", -1, false
+		}
+
+		return string(query), page, true
+	}
+
+	return "", -1, false
+}
+
 func CraftAlmanaxResourceDurationCustomID(characterNumber int64) string {
 	return fmt.Sprintf("/%s/resource?characters=%v", AlmanaxCommandName, characterNumber)
 }
@@ -173,6 +201,6 @@ func ExtractAlmanaxResourceCharacterCustomID(customID string) (int64, bool) {
 }
 
 func IsBelongsToAlmanax(customID string) bool {
-	return regex.IsBelongTo(customID, AlmanaxDayCustomID,
+	return regex.IsBelongTo(customID, AlmanaxDayCustomID, AlmanaxEffectCustomID,
 		AlmanaxResourceCharacterCustomID, AlmanaxResourceDurationCustomID)
 }
