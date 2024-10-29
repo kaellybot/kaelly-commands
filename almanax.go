@@ -35,6 +35,8 @@ const (
 var (
 	AlmanaxDayCustomID = regexp.MustCompile(fmt.
 				Sprintf("^/%s/day/(\\d+)$", AlmanaxCommandName))
+	AlmanaxDayChoiceCustomID = regexp.MustCompile(fmt.
+					Sprintf("^/%s/day\\?type=choice$", AlmanaxCommandName))
 	AlmanaxEffectCustomID = regexp.MustCompile(fmt.
 				Sprintf("^/%s/effect\\?date=(\\d+)&page=(\\d+)$", AlmanaxCommandName))
 	AlmanaxResourceDurationCustomID = regexp.MustCompile(fmt.
@@ -131,6 +133,10 @@ func ExtractAlmanaxDayCustomID(customID string) (*time.Time, bool) {
 	return nil, false
 }
 
+func CraftAlmanaxDayChoiceCustomID() string {
+	return fmt.Sprintf("/%s/day?type=choice", AlmanaxCommandName)
+}
+
 func CraftAlmanaxEffectCustomID(date time.Time, page int) string {
 	return fmt.Sprintf("/%s/effect?date=%v&page=%v", AlmanaxCommandName, date.Unix(), page)
 }
@@ -201,6 +207,6 @@ func ExtractAlmanaxResourceCharacterCustomID(customID string) (int64, bool) {
 }
 
 func IsBelongsToAlmanax(customID string) bool {
-	return regex.IsBelongTo(customID, AlmanaxDayCustomID, AlmanaxEffectCustomID,
-		AlmanaxResourceCharacterCustomID, AlmanaxResourceDurationCustomID)
+	return regex.IsBelongTo(customID, AlmanaxDayCustomID, AlmanaxDayChoiceCustomID,
+		AlmanaxEffectCustomID, AlmanaxResourceCharacterCustomID, AlmanaxResourceDurationCustomID)
 }
