@@ -1,8 +1,13 @@
 package commands
 
 import (
+	"fmt"
+	"regexp"
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
+	"github.com/kaellybot/kaelly-commands/utils/regex"
 	i18n "github.com/kaysoro/discordgo-i18n"
 )
 
@@ -18,6 +23,13 @@ const (
 
 	JobMinLevel = 0
 	JobMaxLevel = 200
+
+	jobBookCustomIDGroups = 4
+)
+
+var (
+	JobBookCustomID = regexp.MustCompile(fmt.
+		Sprintf("^/%s/book\\?job=([a-z_]+)&server=([a-z_]+)&page=(\\d+)$", JobSlashCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -109,4 +121,29 @@ func getJobUserCommand() *discordgo.ApplicationCommand {
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
 		DMPermission:             constants.GetDMPermission(),
 	}
+}
+
+func CraftJobBookCustomID(jobID, serverID string, page int) string {
+	return fmt.Sprintf("/%s/book?job=%v&server=%v&page=%v",
+		JobSlashCommandName, jobID, serverID, page)
+}
+
+func ExtractJobBookCustomID(customID string) (string, string, int, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, JobBookCustomID,
+		jobBookCustomIDGroups); ok {
+		jobID := groups[1]
+		serverID := groups[2]
+		page, errConv := strconv.Atoi(groups[3])
+		if errConv != nil {
+			return "", "", -1, false
+		}
+
+		return jobID, serverID, page, true
+	}
+
+	return "", "", -1, false
+}
+
+func IsBelongsToJob(customID string) bool {
+	return regex.IsBelongTo(customID, JobBookCustomID)
 }

@@ -82,11 +82,11 @@ func TestExtractAlignBookCustomID(t *testing.T) {
 	}{
 		{
 			name:     "AlignBookCustomID could not be extracted",
-			customID: expectedAlmanaxDayChoiceCustomID,
+			customID: "/other/id",
 		},
 		{
 			name:     "AlignBookCustomID could not be converted",
-			customID: "/almanax/day/9999999999999999999",
+			customID: "/align/book?city=_&order=_&server=draconiros&page=9999999999999999999",
 		},
 		{
 			name:           "AlignBookCustomID (without city) nominal case",
