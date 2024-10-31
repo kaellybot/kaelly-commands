@@ -1,8 +1,13 @@
 package commands
 
 import (
+	"fmt"
+	"regexp"
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/kaellybot/kaelly-commands/models/constants"
+	"github.com/kaellybot/kaelly-commands/utils/regex"
 	i18n "github.com/kaysoro/discordgo-i18n"
 )
 
@@ -19,6 +24,15 @@ const (
 
 	AlignmentMinLevel = 0
 	AlignmentMaxLevel = 100
+
+	alignBookCustomIDGroups = 5
+
+	alignAllValues = "_"
+)
+
+var (
+	AlignBookCustomID = regexp.MustCompile(fmt.
+		Sprintf("^/%s/book\\?city=([a-z_]+)&order=([a-z_]+)&server=([a-z_]+)&page=(\\d+)$", AlignSlashCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -128,4 +142,48 @@ func getAlignUserCommand() *discordgo.ApplicationCommand {
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
 		DMPermission:             constants.GetDMPermission(),
 	}
+}
+
+func CraftAlignBookCustomID(cityID, orderID, serverID string, page int) string {
+	if len(cityID) == 0 {
+		cityID = alignAllValues
+	}
+
+	if len(orderID) == 0 {
+		orderID = alignAllValues
+	}
+
+	return fmt.Sprintf("/%s/book?city=%v&order=%v&server=%v&page=%v",
+		AlignSlashCommandName, cityID, orderID, serverID, page)
+}
+
+func ExtractAlignBookCustomID(customID string,
+) (string, string, string, int, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, AlignBookCustomID,
+		alignBookCustomIDGroups); ok {
+		cityID := groups[1]
+		orderID := groups[2]
+		serverID := groups[3]
+
+		if cityID == alignAllValues {
+			cityID = ""
+		}
+
+		if orderID == alignAllValues {
+			orderID = ""
+		}
+
+		page, errConv := strconv.Atoi(groups[4])
+		if errConv != nil {
+			return "", "", "", -1, false
+		}
+
+		return cityID, orderID, serverID, page, true
+	}
+
+	return "", "", "", -1, false
+}
+
+func IsBelongsToAlign(customID string) bool {
+	return regex.IsBelongTo(customID, AlignBookCustomID)
 }
