@@ -22,12 +22,11 @@ const (
 	ConfigStreamerOptionName       = "streamer"
 	ConfigTwitterAccountOptionName = "account"
 	ConfigVideastOptionName        = "videast"
-	ConfigLanguageOptionName       = "language"
 	ConfigEnabledOptionName        = "enabled"
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
-func getConfigSlashCommand(localChoices []*discordgo.ApplicationCommandOptionChoice) *discordgo.ApplicationCommand {
+func getConfigSlashCommand() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
 		Name:                     ConfigCommandName,
 		Description:              "config.description",
@@ -58,15 +57,6 @@ func getConfigSlashCommand(localChoices []*discordgo.ApplicationCommandOptionCho
 						DescriptionLocalizations: *i18n.GetLocalizations("config.almanax.enabled.description"),
 						Type:                     discordgo.ApplicationCommandOptionBoolean,
 						Required:                 true,
-					},
-					{
-						Name:                     ConfigLanguageOptionName,
-						Description:              "config.almanax.language.description",
-						NameLocalizations:        *i18n.GetLocalizations("config.almanax.language.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.almanax.language.description"),
-						Type:                     discordgo.ApplicationCommandOptionInteger,
-						Required:                 false,
-						Choices:                  localChoices,
 					},
 					{
 						Name:                     ConfigChannelOptionName,
@@ -101,15 +91,6 @@ func getConfigSlashCommand(localChoices []*discordgo.ApplicationCommandOptionCho
 						Type:                     discordgo.ApplicationCommandOptionString,
 						Required:                 true,
 						Autocomplete:             true,
-					},
-					{
-						Name:                     ConfigLanguageOptionName,
-						Description:              "config.rss.language.description",
-						NameLocalizations:        *i18n.GetLocalizations("config.rss.language.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.rss.language.description"),
-						Type:                     discordgo.ApplicationCommandOptionInteger,
-						Required:                 false,
-						Choices:                  localChoices,
 					},
 					{
 						Name:                     ConfigChannelOptionName,
