@@ -40,7 +40,7 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 	var minLevel float64 = AlignmentMinLevel
 	return &discordgo.ApplicationCommand{
 		Name:                     AlignSlashCommandName,
-		Description:              "align.description",
+		Description:              i18n.GetDefault("align.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
 		DMPermission:             constants.GetDMPermission(),
@@ -48,14 +48,14 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 		Options: []*discordgo.ApplicationCommandOption{
 			{
 				Name:                     AlignGetSubCommandName,
-				Description:              "align.get.description",
+				Description:              i18n.GetDefault("align.get.description"),
 				NameLocalizations:        *i18n.GetLocalizations("align.get.name"),
 				DescriptionLocalizations: *i18n.GetLocalizations("align.get.description"),
 				Type:                     discordgo.ApplicationCommandOptionSubCommand,
 				Options: []*discordgo.ApplicationCommandOption{
 					{
 						Name:                     AlignCityOptionName,
-						Description:              "align.get.city.description",
+						Description:              i18n.GetDefault("align.get.city.description"),
 						NameLocalizations:        *i18n.GetLocalizations("align.get.city.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.get.city.description"),
 						Type:                     discordgo.ApplicationCommandOptionString,
@@ -64,7 +64,7 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 					},
 					{
 						Name:                     AlignOrderOptionName,
-						Description:              "align.get.order.description",
+						Description:              i18n.GetDefault("align.get.order.description"),
 						NameLocalizations:        *i18n.GetLocalizations("align.get.order.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.get.order.description"),
 						Type:                     discordgo.ApplicationCommandOptionString,
@@ -72,8 +72,9 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 						Autocomplete:             true,
 					},
 					{
-						Name:              AlignServerOptionName,
-						Description:       "align.get.server.description",
+						Name: AlignServerOptionName,
+						Description: i18n.GetDefault("align.get.server.description",
+							i18n.Vars{"game": constants.GetGame()}),
 						NameLocalizations: *i18n.GetLocalizations("align.get.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.get.server.description",
 							i18n.Vars{"game": constants.GetGame()}),
@@ -85,14 +86,14 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 			},
 			{
 				Name:                     AlignSetSubCommandName,
-				Description:              "align.set.description",
+				Description:              i18n.GetDefault("align.set.description"),
 				NameLocalizations:        *i18n.GetLocalizations("align.set.name"),
 				DescriptionLocalizations: *i18n.GetLocalizations("align.set.description"),
 				Type:                     discordgo.ApplicationCommandOptionSubCommand,
 				Options: []*discordgo.ApplicationCommandOption{
 					{
 						Name:                     AlignCityOptionName,
-						Description:              "align.set.city.description",
+						Description:              i18n.GetDefault("align.set.city.description"),
 						NameLocalizations:        *i18n.GetLocalizations("align.set.city.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.set.city.description"),
 						Type:                     discordgo.ApplicationCommandOptionString,
@@ -101,7 +102,7 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 					},
 					{
 						Name:                     AlignOrderOptionName,
-						Description:              "align.set.order.description",
+						Description:              i18n.GetDefault("align.set.order.description"),
 						NameLocalizations:        *i18n.GetLocalizations("align.set.order.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.set.order.description"),
 						Type:                     discordgo.ApplicationCommandOptionString,
@@ -110,7 +111,7 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 					},
 					{
 						Name:                     AlignLevelOptionName,
-						Description:              "align.set.level.description",
+						Description:              i18n.GetDefault("align.set.level.description"),
 						NameLocalizations:        *i18n.GetLocalizations("align.set.level.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.set.level.description"),
 						Type:                     discordgo.ApplicationCommandOptionInteger,
@@ -119,8 +120,9 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 						MaxValue:                 AlignmentMaxLevel,
 					},
 					{
-						Name:              AlignServerOptionName,
-						Description:       "align.set.server.description",
+						Name: AlignServerOptionName,
+						Description: i18n.GetDefault("align.set.server.description",
+							i18n.Vars{"game": constants.GetGame()}),
 						NameLocalizations: *i18n.GetLocalizations("align.set.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.set.server.description",
 							i18n.Vars{"game": constants.GetGame()}),

@@ -16,7 +16,7 @@ const (
 func getPosSlashCommand() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
 		Name:                     PosCommandName,
-		Description:              "pos.description",
+		Description:              i18n.GetDefault("pos.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
 		DMPermission:             constants.GetDMPermission(),
@@ -24,7 +24,7 @@ func getPosSlashCommand() *discordgo.ApplicationCommand {
 		Options: []*discordgo.ApplicationCommandOption{
 			{
 				Name:                     PosDimensionOptionName,
-				Description:              "pos.dimension.description",
+				Description:              i18n.GetDefault("pos.dimension.description"),
 				NameLocalizations:        *i18n.GetLocalizations("pos.dimension.name"),
 				DescriptionLocalizations: *i18n.GetLocalizations("pos.dimension.description"),
 				Type:                     discordgo.ApplicationCommandOptionString,
@@ -32,8 +32,9 @@ func getPosSlashCommand() *discordgo.ApplicationCommand {
 				Autocomplete:             true,
 			},
 			{
-				Name:              PosServerOptionName,
-				Description:       "pos.server.description",
+				Name: PosServerOptionName,
+				Description: i18n.GetDefault("pos.server.description",
+					i18n.Vars{"game": constants.GetGame()}),
 				NameLocalizations: *i18n.GetLocalizations("pos.server.name"),
 				DescriptionLocalizations: *i18n.GetLocalizations("pos.server.description",
 					i18n.Vars{"game": constants.GetGame()}),

@@ -37,7 +37,7 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 	var minLevel float64 = JobMinLevel
 	return &discordgo.ApplicationCommand{
 		Name:                     JobSlashCommandName,
-		Description:              "job.description",
+		Description:              i18n.GetDefault("job.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
 		DMPermission:             constants.GetDMPermission(),
@@ -45,14 +45,14 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 		Options: []*discordgo.ApplicationCommandOption{
 			{
 				Name:                     JobGetSubCommandName,
-				Description:              "job.get.description",
+				Description:              i18n.GetDefault("job.get.description"),
 				NameLocalizations:        *i18n.GetLocalizations("job.get.name"),
 				DescriptionLocalizations: *i18n.GetLocalizations("job.get.description"),
 				Type:                     discordgo.ApplicationCommandOptionSubCommand,
 				Options: []*discordgo.ApplicationCommandOption{
 					{
 						Name:                     JobJobOptionName,
-						Description:              "job.get.job.description",
+						Description:              i18n.GetDefault("job.get.job.description"),
 						NameLocalizations:        *i18n.GetLocalizations("job.get.job.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.get.job.description"),
 						Type:                     discordgo.ApplicationCommandOptionString,
@@ -60,8 +60,9 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 						Autocomplete:             true,
 					},
 					{
-						Name:              JobServerOptionName,
-						Description:       "job.get.server.description",
+						Name: JobServerOptionName,
+						Description: i18n.GetDefault("job.get.server.description",
+							i18n.Vars{"game": constants.GetGame()}),
 						NameLocalizations: *i18n.GetLocalizations("job.get.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.get.server.description",
 							i18n.Vars{"game": constants.GetGame()}),
@@ -73,14 +74,14 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 			},
 			{
 				Name:                     JobSetSubCommandName,
-				Description:              "job.set.description",
+				Description:              i18n.GetDefault("job.set.description"),
 				NameLocalizations:        *i18n.GetLocalizations("job.set.name"),
 				DescriptionLocalizations: *i18n.GetLocalizations("job.set.description"),
 				Type:                     discordgo.ApplicationCommandOptionSubCommand,
 				Options: []*discordgo.ApplicationCommandOption{
 					{
 						Name:                     JobJobOptionName,
-						Description:              "job.set.job.description",
+						Description:              i18n.GetDefault("job.set.job.description"),
 						NameLocalizations:        *i18n.GetLocalizations("job.set.job.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.set.job.description"),
 						Type:                     discordgo.ApplicationCommandOptionString,
@@ -89,7 +90,7 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 					},
 					{
 						Name:                     JobLevelOptionName,
-						Description:              "job.set.level.description",
+						Description:              i18n.GetDefault("job.set.level.description"),
 						NameLocalizations:        *i18n.GetLocalizations("job.set.level.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.set.level.description"),
 						Type:                     discordgo.ApplicationCommandOptionInteger,
@@ -98,8 +99,9 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 						MaxValue:                 JobMaxLevel,
 					},
 					{
-						Name:              JobServerOptionName,
-						Description:       "job.set.server.description",
+						Name: JobServerOptionName,
+						Description: i18n.GetDefault("job.set.server.description",
+							i18n.Vars{"game": constants.GetGame()}),
 						NameLocalizations: *i18n.GetLocalizations("job.set.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.set.server.description",
 							i18n.Vars{"game": constants.GetGame()}),
