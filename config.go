@@ -12,16 +12,12 @@ const (
 	ConfigAlmanaxSubCommandName = "almanax"
 	ConfigRSSSubCommandName     = "rss"
 	ConfigServerSubCommandName  = "server"
-	ConfigTwitchSubCommandName  = "twitch"
 	ConfigTwitterSubCommandName = "twitter"
-	ConfigYoutubeSubCommandName = "youtube"
 
 	ConfigServerOptionName         = "server"
 	ConfigChannelOptionName        = "channel"
 	ConfigFeedTypeOptionName       = "type"
-	ConfigStreamerOptionName       = "streamer"
 	ConfigTwitterAccountOptionName = "account"
-	ConfigVideastOptionName        = "videast"
 	ConfigEnabledOptionName        = "enabled"
 )
 
@@ -136,40 +132,6 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 				},
 			},
 			{
-				Name:                     ConfigTwitchSubCommandName,
-				Description:              i18n.GetDefault("config.twitch.description"),
-				NameLocalizations:        *i18n.GetLocalizations("config.twitch.name"),
-				DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.description"),
-				Type:                     discordgo.ApplicationCommandOptionSubCommand,
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Name:                     ConfigEnabledOptionName,
-						Description:              i18n.GetDefault("config.twitch.enabled.description"),
-						NameLocalizations:        *i18n.GetLocalizations("config.twitch.enabled.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.enabled.description"),
-						Type:                     discordgo.ApplicationCommandOptionBoolean,
-						Required:                 true,
-					},
-					{
-						Name:                     ConfigStreamerOptionName,
-						Description:              i18n.GetDefault("config.twitch.streamer.description"),
-						NameLocalizations:        *i18n.GetLocalizations("config.twitch.streamer.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.streamer.description"),
-						Type:                     discordgo.ApplicationCommandOptionString,
-						Required:                 true,
-						Autocomplete:             true,
-					},
-					{
-						Name:                     ConfigChannelOptionName,
-						Description:              i18n.GetDefault("config.twitch.channel.description"),
-						NameLocalizations:        *i18n.GetLocalizations("config.twitch.channel.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.twitch.channel.description"),
-						Type:                     discordgo.ApplicationCommandOptionChannel,
-						Required:                 false,
-					},
-				},
-			},
-			{
 				Name: ConfigTwitterSubCommandName,
 				Description: i18n.GetDefault("config.twitter.description",
 					i18n.Vars{"game": constants.GetGame()}),
@@ -200,40 +162,6 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 						Description:              i18n.GetDefault("config.twitter.channel.description"),
 						NameLocalizations:        *i18n.GetLocalizations("config.twitter.channel.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("config.twitter.channel.description"),
-						Type:                     discordgo.ApplicationCommandOptionChannel,
-						Required:                 false,
-					},
-				},
-			},
-			{
-				Name:                     ConfigYoutubeSubCommandName,
-				Description:              i18n.GetDefault("config.youtube.description"),
-				NameLocalizations:        *i18n.GetLocalizations("config.youtube.name"),
-				DescriptionLocalizations: *i18n.GetLocalizations("config.youtube.description"),
-				Type:                     discordgo.ApplicationCommandOptionSubCommand,
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Name:                     ConfigEnabledOptionName,
-						Description:              i18n.GetDefault("config.youtube.enabled.description"),
-						NameLocalizations:        *i18n.GetLocalizations("config.youtube.enabled.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.youtube.enabled.description"),
-						Type:                     discordgo.ApplicationCommandOptionBoolean,
-						Required:                 true,
-					},
-					{
-						Name:                     ConfigVideastOptionName,
-						Description:              i18n.GetDefault("config.youtube.videast.description"),
-						NameLocalizations:        *i18n.GetLocalizations("config.youtube.videast.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.youtube.videast.description"),
-						Type:                     discordgo.ApplicationCommandOptionString,
-						Required:                 true,
-						Autocomplete:             true,
-					},
-					{
-						Name:                     ConfigChannelOptionName,
-						Description:              i18n.GetDefault("config.youtube.channel.description"),
-						NameLocalizations:        *i18n.GetLocalizations("config.youtube.channel.name"),
-						DescriptionLocalizations: *i18n.GetLocalizations("config.youtube.channel.description"),
 						Type:                     discordgo.ApplicationCommandOptionChannel,
 						Required:                 false,
 					},
