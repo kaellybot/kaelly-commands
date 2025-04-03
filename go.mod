@@ -1,6 +1,6 @@
 module github.com/kaellybot/kaelly-commands
 
-go 1.22
+go 1.24
 
 require (
 	github.com/bwmarrin/discordgo v0.28.1
