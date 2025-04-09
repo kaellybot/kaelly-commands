@@ -25,14 +25,20 @@ const (
 	AlignmentMinLevel = 0
 	AlignmentMaxLevel = 100
 
-	alignBookCustomIDGroups = 5
+	alignBookPageCustomIDGroups        = 5
+	alignBookCitySelectCustomIDGroups  = 3
+	alignBookOrderSelectCustomIDGroups = 3
 
-	alignAllValues = "_"
+	AlignAllValues = "_"
 )
 
 var (
-	AlignBookCustomID = regexp.MustCompile(fmt.
-		Sprintf("^/%s/book\\?city=([a-z_]+)&order=([a-z_]+)&server=([a-z_]+)&page=(\\d+)$", AlignSlashCommandName))
+	AlignBookPageCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/books/%s\\?city=([a-z_]+)&order=([a-z_]+)&server=([a-z_]+)&page=(\\d+)$", AlignSlashCommandName))
+	AlignBookCityCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/books/%s\\?order=([a-z_]+)&server=([a-z_]+)$", AlignSlashCommandName))
+	AlignBookOrderCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/books/%s\\?city=([a-z_]+)&server=([a-z_]+)$", AlignSlashCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -146,32 +152,32 @@ func getAlignUserCommand() *discordgo.ApplicationCommand {
 	}
 }
 
-func CraftAlignBookCustomID(cityID, orderID, serverID string, page int) string {
+func CraftAlignBookPageCustomID(cityID, orderID, serverID string, page int) string {
 	if len(cityID) == 0 {
-		cityID = alignAllValues
+		cityID = AlignAllValues
 	}
 
 	if len(orderID) == 0 {
-		orderID = alignAllValues
+		orderID = AlignAllValues
 	}
 
-	return fmt.Sprintf("/%s/book?city=%v&order=%v&server=%v&page=%v",
+	return fmt.Sprintf("/books/%s?city=%v&order=%v&server=%v&page=%v",
 		AlignSlashCommandName, cityID, orderID, serverID, page)
 }
 
-func ExtractAlignBookCustomID(customID string,
+func ExtractAlignBookPageCustomID(customID string,
 ) (string, string, string, int, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, AlignBookCustomID,
-		alignBookCustomIDGroups); ok {
+	if groups, ok := regex.ExtractCustomID(customID, AlignBookPageCustomID,
+		alignBookPageCustomIDGroups); ok {
 		cityID := groups[1]
 		orderID := groups[2]
 		serverID := groups[3]
 
-		if cityID == alignAllValues {
+		if cityID == AlignAllValues {
 			cityID = ""
 		}
 
-		if orderID == alignAllValues {
+		if orderID == AlignAllValues {
 			orderID = ""
 		}
 
@@ -186,6 +192,59 @@ func ExtractAlignBookCustomID(customID string,
 	return "", "", "", -1, false
 }
 
+func CraftAlignBookCityCustomID(orderID, serverID string) string {
+	if len(orderID) == 0 {
+		orderID = AlignAllValues
+	}
+
+	return fmt.Sprintf("/books/%s?order=%v&server=%v",
+		AlignSlashCommandName, orderID, serverID)
+}
+
+func ExtractAlignBookCityCustomID(customID string,
+) (string, string, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, AlignBookCityCustomID,
+		alignBookCitySelectCustomIDGroups); ok {
+		orderID := groups[1]
+		serverID := groups[2]
+
+		if orderID == AlignAllValues {
+			orderID = ""
+		}
+
+		return orderID, serverID, true
+	}
+
+	return "", "", false
+}
+
+func ExtractAlignBookOrderCustomID(customID string,
+) (string, string, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, AlignBookOrderCustomID,
+		alignBookOrderSelectCustomIDGroups); ok {
+		cityID := groups[1]
+		serverID := groups[2]
+
+		if cityID == AlignAllValues {
+			cityID = ""
+		}
+
+		return cityID, serverID, true
+	}
+
+	return "", "", false
+}
+
+func CraftAlignBookOrderCustomID(cityID, serverID string) string {
+	if len(cityID) == 0 {
+		cityID = AlignAllValues
+	}
+
+	return fmt.Sprintf("/books/%s?city=%v&server=%v",
+		AlignSlashCommandName, cityID, serverID)
+}
+
 func IsBelongsToAlign(customID string) bool {
-	return regex.IsBelongTo(customID, AlignBookCustomID)
+	return regex.IsBelongTo(customID, AlignBookPageCustomID,
+		AlignBookCityCustomID, AlignBookOrderCustomID)
 }

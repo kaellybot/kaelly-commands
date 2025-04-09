@@ -8,10 +8,16 @@ import (
 )
 
 const (
-	expectedAlignBookCustomID        = "/align/book?city=bonta&order=esprit&server=draconiros&page=2"
-	expectedAlignBookNoCityCustomID  = "/align/book?city=_&order=esprit&server=draconiros&page=2"
-	expectedAlignBookNoOrderCustomID = "/align/book?city=bonta&order=_&server=draconiros&page=2"
-	expectedAlignBookNoAllCustomID   = "/align/book?city=_&order=_&server=draconiros&page=2"
+	expectedAlignBookPageCustomID        = "/books/align?city=bonta&order=esprit&server=draconiros&page=2"
+	expectedAlignBookPageNoCityCustomID  = "/books/align?city=_&order=esprit&server=draconiros&page=2"
+	expectedAlignBookPageNoOrderCustomID = "/books/align?city=bonta&order=_&server=draconiros&page=2"
+	expectedAlignBookPageNoAllCustomID   = "/books/align?city=_&order=_&server=draconiros&page=2"
+
+	expectedAlignBookCityNoOrderCustomID = "/books/align?order=_&server=draconiros"
+	expectedAlignBookCityCustomID        = "/books/align?order=esprit&server=draconiros"
+
+	expectedAlignBookOrderNoCityCustomID = "/books/align?city=_&server=draconiros"
+	expectedAlignBookOrderCustomID       = "/books/align?city=bonta&server=draconiros"
 
 	expectedAlignBookPage   = 2
 	expectedAlignBookCity   = "bonta"
@@ -19,7 +25,7 @@ const (
 	expectedAlignBookServer = "draconiros"
 )
 
-func TestCraftAlignBookCustomID(t *testing.T) {
+func TestCraftAlignBookPageCustomID(t *testing.T) {
 	tests := []struct {
 		name     string
 		city     string
@@ -34,7 +40,7 @@ func TestCraftAlignBookCustomID(t *testing.T) {
 			order:    expectedAlignBookOrder,
 			server:   expectedAlignBookServer,
 			page:     expectedAlignBookPage,
-			expected: expectedAlignBookNoCityCustomID,
+			expected: expectedAlignBookPageNoCityCustomID,
 		},
 		{
 			name:     "CraftAlignBookCustomID without order returns expected custom ID",
@@ -42,7 +48,7 @@ func TestCraftAlignBookCustomID(t *testing.T) {
 			order:    "",
 			server:   expectedAlignBookServer,
 			page:     expectedAlignBookPage,
-			expected: expectedAlignBookNoOrderCustomID,
+			expected: expectedAlignBookPageNoOrderCustomID,
 		},
 		{
 			name:     "CraftAlignBookCustomID without order and city returns expected custom ID",
@@ -50,7 +56,7 @@ func TestCraftAlignBookCustomID(t *testing.T) {
 			order:    "",
 			server:   expectedAlignBookServer,
 			page:     expectedAlignBookPage,
-			expected: expectedAlignBookNoAllCustomID,
+			expected: expectedAlignBookPageNoAllCustomID,
 		},
 		{
 			name:     "CraftAlignBookCustomID returns expected custom ID",
@@ -58,19 +64,19 @@ func TestCraftAlignBookCustomID(t *testing.T) {
 			order:    expectedAlignBookOrder,
 			server:   expectedAlignBookServer,
 			page:     expectedAlignBookPage,
-			expected: expectedAlignBookCustomID,
+			expected: expectedAlignBookPageCustomID,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := commands.CraftAlignBookCustomID(tt.city, tt.order, tt.server, tt.page)
+			actual := commands.CraftAlignBookPageCustomID(tt.city, tt.order, tt.server, tt.page)
 			assert.Equal(t, tt.expected, actual)
 		})
 	}
 }
 
-func TestExtractAlignBookCustomID(t *testing.T) {
+func TestExtractAlignBookPageCustomID(t *testing.T) {
 	tests := []struct {
 		name           string
 		customID       string
@@ -89,8 +95,16 @@ func TestExtractAlignBookCustomID(t *testing.T) {
 			customID: "/align/book?city=_&order=_&server=draconiros&page=9999999999999999999",
 		},
 		{
+			name:     "AlignBookCityCustomID could not be converted",
+			customID: expectedAlignBookCityCustomID,
+		},
+		{
+			name:     "AlignBookOrderCustomID could not be converted",
+			customID: expectedAlignBookOrderCustomID,
+		},
+		{
 			name:           "AlignBookCustomID (without city) nominal case",
-			customID:       expectedAlignBookNoCityCustomID,
+			customID:       expectedAlignBookPageNoCityCustomID,
 			expectedCity:   "",
 			expectedOrder:  expectedAlignBookOrder,
 			expectedServer: expectedAlignBookServer,
@@ -99,7 +113,7 @@ func TestExtractAlignBookCustomID(t *testing.T) {
 		},
 		{
 			name:           "AlignBookCustomID (without order) nominal case",
-			customID:       expectedAlignBookNoOrderCustomID,
+			customID:       expectedAlignBookPageNoOrderCustomID,
 			expectedCity:   expectedAlignBookCity,
 			expectedOrder:  "",
 			expectedServer: expectedAlignBookServer,
@@ -108,7 +122,7 @@ func TestExtractAlignBookCustomID(t *testing.T) {
 		},
 		{
 			name:           "AlignBookCustomID (without city and order) nominal case",
-			customID:       expectedAlignBookNoAllCustomID,
+			customID:       expectedAlignBookPageNoAllCustomID,
 			expectedCity:   "",
 			expectedOrder:  "",
 			expectedServer: expectedAlignBookServer,
@@ -117,7 +131,7 @@ func TestExtractAlignBookCustomID(t *testing.T) {
 		},
 		{
 			name:           "AlignBookCustomID nominal case",
-			customID:       expectedAlignBookCustomID,
+			customID:       expectedAlignBookPageCustomID,
 			expectedCity:   expectedAlignBookCity,
 			expectedOrder:  expectedAlignBookOrder,
 			expectedServer: expectedAlignBookServer,
@@ -128,13 +142,171 @@ func TestExtractAlignBookCustomID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			city, order, server, page, ok := commands.ExtractAlignBookCustomID(tt.customID)
+			city, order, server, page, ok := commands.ExtractAlignBookPageCustomID(tt.customID)
 			if tt.succeeded {
 				assert.True(t, ok)
 				assert.Equal(t, tt.expectedCity, city)
 				assert.Equal(t, tt.expectedOrder, order)
 				assert.Equal(t, tt.expectedServer, server)
 				assert.Equal(t, tt.expectedPage, page)
+			} else {
+				assert.False(t, ok)
+			}
+		})
+	}
+}
+
+func TestCraftAlignBookCityCustomID(t *testing.T) {
+	tests := []struct {
+		name     string
+		order    string
+		server   string
+		expected string
+	}{
+		{
+			name:     "CraftAlignBookCityCustomID without order returns expected custom ID",
+			order:    "",
+			server:   expectedAlignBookServer,
+			expected: expectedAlignBookCityNoOrderCustomID,
+		},
+		{
+			name:     "CraftAlignBookCustomID returns expected custom ID",
+			order:    expectedAlignBookOrder,
+			server:   expectedAlignBookServer,
+			expected: expectedAlignBookCityCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftAlignBookCityCustomID(tt.order, tt.server)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}
+
+func TestExtractAlignBookCityCustomID(t *testing.T) {
+	tests := []struct {
+		name           string
+		customID       string
+		expectedOrder  string
+		expectedServer string
+		succeeded      bool
+	}{
+		{
+			name:     "AlignBookCustomID could not be extracted",
+			customID: "/other/id",
+		},
+		{
+			name:     "AlignBookPageCustomID could not be converted",
+			customID: expectedAlignBookPageCustomID,
+		},
+		{
+			name:     "AlignBookOrderCustomID could not be converted",
+			customID: expectedAlignBookOrderCustomID,
+		},
+		{
+			name:           "AlignBookCityCustomID (without order) nominal case",
+			customID:       expectedAlignBookCityNoOrderCustomID,
+			expectedOrder:  "",
+			expectedServer: expectedAlignBookServer,
+			succeeded:      true,
+		},
+		{
+			name:           "AlignBookCustomID nominal case",
+			customID:       expectedAlignBookCityCustomID,
+			expectedOrder:  expectedAlignBookOrder,
+			expectedServer: expectedAlignBookServer,
+			succeeded:      true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			order, server, ok := commands.ExtractAlignBookCityCustomID(tt.customID)
+			if tt.succeeded {
+				assert.True(t, ok)
+				assert.Equal(t, tt.expectedOrder, order)
+				assert.Equal(t, tt.expectedServer, server)
+			} else {
+				assert.False(t, ok)
+			}
+		})
+	}
+}
+
+func TestCraftAlignBookOrderCustomID(t *testing.T) {
+	tests := []struct {
+		name     string
+		city     string
+		server   string
+		expected string
+	}{
+		{
+			name:     "CraftAlignBookOrderCustomID without city returns expected custom ID",
+			city:     "",
+			server:   expectedAlignBookServer,
+			expected: expectedAlignBookOrderNoCityCustomID,
+		},
+		{
+			name:     "CraftAlignBookOrderCustomID returns expected custom ID",
+			city:     expectedAlignBookCity,
+			server:   expectedAlignBookServer,
+			expected: expectedAlignBookOrderCustomID,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := commands.CraftAlignBookOrderCustomID(tt.city, tt.server)
+			assert.Equal(t, tt.expected, actual)
+		})
+	}
+}
+
+func TestExtractAlignBookOrderCustomID(t *testing.T) {
+	tests := []struct {
+		name           string
+		customID       string
+		expectedCity   string
+		expectedServer string
+		succeeded      bool
+	}{
+		{
+			name:     "AlignBookCustomID could not be extracted",
+			customID: "/other/id",
+		},
+		{
+			name:     "AlignBookPageCustomID could not be converted",
+			customID: expectedAlignBookPageCustomID,
+		},
+		{
+			name:     "AlignBookCityCustomID could not be converted",
+			customID: expectedAlignBookCityCustomID,
+		},
+		{
+			name:           "AlignBookOrderCustomID (without city) nominal case",
+			customID:       expectedAlignBookOrderNoCityCustomID,
+			expectedCity:   "",
+			expectedServer: expectedAlignBookServer,
+			succeeded:      true,
+		},
+		{
+			name:           "AlignBookOrderCustomID nominal case",
+			customID:       expectedAlignBookOrderCustomID,
+			expectedCity:   expectedAlignBookCity,
+			expectedServer: expectedAlignBookServer,
+			succeeded:      true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			city, server, ok := commands.ExtractAlignBookOrderCustomID(tt.customID)
+			if tt.succeeded {
+				assert.True(t, ok)
+				assert.Equal(t, tt.expectedCity, city)
+				assert.Equal(t, tt.expectedServer, server)
 			} else {
 				assert.False(t, ok)
 			}
@@ -150,22 +322,42 @@ func TestIsBelongsToAlign(t *testing.T) {
 	}{
 		{
 			name:     "Valid align book custom ID",
-			input:    expectedAlignBookCustomID,
+			input:    expectedAlignBookPageCustomID,
 			expected: true,
 		},
 		{
 			name:     "Valid align book (without city) custom ID",
-			input:    expectedAlignBookNoCityCustomID,
+			input:    expectedAlignBookPageNoCityCustomID,
 			expected: true,
 		},
 		{
 			name:     "Valid align book (without order) custom ID",
-			input:    expectedAlignBookNoOrderCustomID,
+			input:    expectedAlignBookPageNoOrderCustomID,
 			expected: true,
 		},
 		{
 			name:     "Valid align book (without city and order) custom ID",
-			input:    expectedAlignBookNoAllCustomID,
+			input:    expectedAlignBookPageNoAllCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid align book city (without order) custom ID",
+			input:    expectedAlignBookCityNoOrderCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid align book city custom ID",
+			input:    expectedAlignBookCityCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid align book order (without city) custom ID",
+			input:    expectedAlignBookOrderNoCityCustomID,
+			expected: true,
+		},
+		{
+			name:     "Valid align book order custom ID",
+			input:    expectedAlignBookOrderCustomID,
 			expected: true,
 		},
 		{
