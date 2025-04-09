@@ -24,12 +24,15 @@ const (
 	JobMinLevel = 0
 	JobMaxLevel = 200
 
-	jobBookCustomIDGroups = 4
+	jobBookPageCustomIDGroups   = 4
+	jobBookSelectCustomIDGroups = 2
 )
 
 var (
-	JobBookCustomID = regexp.MustCompile(fmt.
-		Sprintf("^/%s/book\\?job=([a-z_]+)&server=([a-z_]+)&page=(\\d+)$", JobSlashCommandName))
+	JobBookPageCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/books/%s/([a-z_]+)\\?server=([a-z_]+)&page=(\\d+)$", JobSlashCommandName))
+	JobBookSelectCustomID = regexp.MustCompile(fmt.
+				Sprintf("^/books/%s\\?server=([a-z_]+)$", JobSlashCommandName))
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
@@ -125,14 +128,14 @@ func getJobUserCommand() *discordgo.ApplicationCommand {
 	}
 }
 
-func CraftJobBookCustomID(jobID, serverID string, page int) string {
-	return fmt.Sprintf("/%s/book?job=%v&server=%v&page=%v",
+func CraftJobBookPageCustomID(jobID, serverID string, page int) string {
+	return fmt.Sprintf("/books/%s/%v?server=%v&page=%v",
 		JobSlashCommandName, jobID, serverID, page)
 }
 
-func ExtractJobBookCustomID(customID string) (string, string, int, bool) {
-	if groups, ok := regex.ExtractCustomID(customID, JobBookCustomID,
-		jobBookCustomIDGroups); ok {
+func ExtractJobBookPageCustomID(customID string) (string, string, int, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, JobBookPageCustomID,
+		jobBookPageCustomIDGroups); ok {
 		jobID := groups[1]
 		serverID := groups[2]
 		page, errConv := strconv.Atoi(groups[3])
@@ -146,6 +149,20 @@ func ExtractJobBookCustomID(customID string) (string, string, int, bool) {
 	return "", "", -1, false
 }
 
+func CraftJobBookSelectCustomID(serverID string) string {
+	return fmt.Sprintf("/books/%s?server=%v",
+		JobSlashCommandName, serverID)
+}
+
+func ExtractJobBookSelectCustomID(customID string) (string, bool) {
+	if groups, ok := regex.ExtractCustomID(customID, JobBookSelectCustomID,
+		jobBookSelectCustomIDGroups); ok {
+		return groups[1], true
+	}
+
+	return "", false
+}
+
 func IsBelongsToJob(customID string) bool {
-	return regex.IsBelongTo(customID, JobBookCustomID)
+	return regex.IsBelongTo(customID, JobBookPageCustomID, JobBookSelectCustomID)
 }
