@@ -14,7 +14,6 @@ func GetCommands() []*discordgo.ApplicationCommand {
 		getJobSlashCommand(),
 		getJobUserCommand(),
 		getMapSlashCommand(),
-		getPosSlashCommand(),
 		getSetSlashCommand(),
 	}
 }
