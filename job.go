@@ -43,7 +43,7 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 		Description:              i18n.GetDefault("job.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("job.description"),
 		Options: []*discordgo.ApplicationCommandOption{
 			{
@@ -124,7 +124,7 @@ func getJobUserCommand() *discordgo.ApplicationCommand {
 		Name:                     JobUserCommandName,
 		Type:                     discordgo.UserApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 	}
 }
 

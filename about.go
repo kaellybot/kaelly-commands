@@ -17,7 +17,7 @@ func getAboutSlashCommand() *discordgo.ApplicationCommand {
 		Description:              i18n.GetDefault("about.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("about.description"),
 	}
 }

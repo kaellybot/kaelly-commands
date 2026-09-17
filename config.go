@@ -29,7 +29,7 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 			i18n.Vars{"game": constants.GetGame()}),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetManageServerPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("config.description",
 			i18n.Vars{"game": constants.GetGame()}),
 		Options: []*discordgo.ApplicationCommandOption{

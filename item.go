@@ -34,7 +34,7 @@ func getItemSlashCommand() *discordgo.ApplicationCommand {
 		Description:              i18n.GetDefault("item.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("item.description"),
 		Options: []*discordgo.ApplicationCommandOption{
 			{

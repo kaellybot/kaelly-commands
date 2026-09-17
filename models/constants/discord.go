@@ -2,9 +2,9 @@ package constants
 
 import "github.com/bwmarrin/discordgo"
 
-func GetDMPermission() *bool {
-	var dmPermission = false
-	return &dmPermission
+// GetContexts restricts commands to guilds (no bot DM, no private channel).
+func GetContexts() *[]discordgo.InteractionContextType {
+	return &[]discordgo.InteractionContextType{discordgo.InteractionContextGuild}
 }
 
 func GetDefaultPermission() *int64 {
@@ -13,6 +13,6 @@ func GetDefaultPermission() *int64 {
 }
 
 func GetManageServerPermission() *int64 {
-	var manageServerPermission int64 = discordgo.PermissionManageServer
+	var manageServerPermission int64 = discordgo.PermissionManageGuild
 	return &manageServerPermission
 }

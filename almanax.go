@@ -53,7 +53,7 @@ func getAlmanaxSlashCommand() *discordgo.ApplicationCommand {
 		Description:              i18n.GetDefault("almanax.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("almanax.description"),
 		Options: []*discordgo.ApplicationCommandOption{
 			{

@@ -49,7 +49,7 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 		Description:              i18n.GetDefault("align.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("align.description"),
 		Options: []*discordgo.ApplicationCommandOption{
 			{
@@ -148,7 +148,7 @@ func getAlignUserCommand() *discordgo.ApplicationCommand {
 		Name:                     AlignUserCommandName,
 		Type:                     discordgo.UserApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 	}
 }
 

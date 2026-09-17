@@ -32,7 +32,7 @@ func getSetSlashCommand() *discordgo.ApplicationCommand {
 		Description:              i18n.GetDefault("set.description"),
 		Type:                     discordgo.ChatApplicationCommand,
 		DefaultMemberPermissions: constants.GetDefaultPermission(),
-		DMPermission:             constants.GetDMPermission(),
+		Contexts:                 constants.GetContexts(),
 		DescriptionLocalizations: i18n.GetLocalizations("set.description"),
 		Options: []*discordgo.ApplicationCommandOption{
 			{
