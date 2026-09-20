@@ -21,6 +21,26 @@ const (
 	ConfigEnabledOptionName        = "enabled"
 )
 
+// notificationChannelTypes restricts the picker to what Discord accepts as the
+// target of a followed announcement channel: a plain guild text channel. A
+// thread holds no webhook of its own, and no other type can follow.
+func notificationChannelTypes() []discordgo.ChannelType {
+	return []discordgo.ChannelType{discordgo.ChannelTypeGuildText}
+}
+
+// serverChannelTypes restricts the picker to the channels a binding can ever be
+// read back from: ones that host interactions, or that own the threads hosting
+// them. A category hosts neither, so binding it would never apply.
+func serverChannelTypes() []discordgo.ChannelType {
+	return []discordgo.ChannelType{
+		discordgo.ChannelTypeGuildText,
+		discordgo.ChannelTypeGuildVoice,
+		discordgo.ChannelTypeGuildNews,
+		discordgo.ChannelTypeGuildForum,
+		discordgo.ChannelTypeGuildMedia,
+	}
+}
+
 //nolint:nolintlint,exhaustive,lll,dupl,funlen
 func getConfigSlashCommand() *discordgo.ApplicationCommand {
 	return &discordgo.ApplicationCommand{
@@ -61,6 +81,7 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 						NameLocalizations:        *i18n.GetLocalizations("config.almanax.channel.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("config.almanax.channel.description"),
 						Type:                     discordgo.ApplicationCommandOptionChannel,
+						ChannelTypes:             notificationChannelTypes(),
 						Required:                 false,
 					},
 				},
@@ -95,6 +116,7 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 						NameLocalizations:        *i18n.GetLocalizations("config.rss.channel.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("config.rss.channel.description"),
 						Type:                     discordgo.ApplicationCommandOptionChannel,
+						ChannelTypes:             notificationChannelTypes(),
 						Required:                 false,
 					},
 				},
@@ -126,8 +148,9 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 						NameLocalizations: *i18n.GetLocalizations("config.server.channel.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("config.server.channel.description",
 							i18n.Vars{"game": constants.GetGame()}),
-						Type:     discordgo.ApplicationCommandOptionChannel,
-						Required: false,
+						Type:         discordgo.ApplicationCommandOptionChannel,
+						ChannelTypes: serverChannelTypes(),
+						Required:     false,
 					},
 				},
 			},
@@ -163,6 +186,7 @@ func getConfigSlashCommand() *discordgo.ApplicationCommand {
 						NameLocalizations:        *i18n.GetLocalizations("config.twitter.channel.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("config.twitter.channel.description"),
 						Type:                     discordgo.ApplicationCommandOptionChannel,
+						ChannelTypes:             notificationChannelTypes(),
 						Required:                 false,
 					},
 				},
