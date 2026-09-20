@@ -315,6 +315,20 @@ func TestExtractAlmanaxResourceDurationCustomID(t *testing.T) {
 			expectedCharacters: expectedAlmanaxCharacters,
 			succeeded:          true,
 		},
+		{
+			// Character counts are not durations: they are not bounded by
+			// [AlmanaxDurationMinimumValue, AlmanaxDurationMaximumValue].
+			name:               "AlmanaxResourceDurationCustomID keeps a character count above the duration bounds",
+			customID:           "/almanax/resource?characters=50",
+			expectedCharacters: 50,
+			succeeded:          true,
+		},
+		{
+			name:               "AlmanaxResourceDurationCustomID keeps a character count below the duration bounds",
+			customID:           "/almanax/resource?characters=0",
+			expectedCharacters: 0,
+			succeeded:          true,
+		},
 	}
 
 	for _, tt := range tests {

@@ -169,17 +169,11 @@ func CraftAlmanaxResourceDurationCustomID(characterNumber int64) string {
 func ExtractAlmanaxResourceDurationCustomID(customID string) (int64, bool) {
 	if groups, ok := regex.ExtractCustomID(customID, AlmanaxResourceDurationCustomID,
 		almanaxResourceDurationCustomIDGroups); ok {
+		// No clamping here: this custom ID carries a character count, whose
+		// values are owned by the caller, not the duration bounds below.
 		characterNumber, err := strconv.ParseInt(groups[1], 10, 64)
 		if err != nil {
 			return -1, false
-		}
-
-		if characterNumber < AlmanaxDurationMinimumValue {
-			characterNumber = AlmanaxDurationMinimumValue
-		}
-
-		if characterNumber > AlmanaxDurationMaximumValue {
-			characterNumber = AlmanaxDurationMaximumValue
 		}
 
 		return characterNumber, true
