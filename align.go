@@ -24,6 +24,10 @@ const (
 
 	AlignmentMinLevel = 0
 	AlignmentMaxLevel = 100
+	// AlignmentTouchMaxLevel is the highest alignment level on DOFUS Touch.
+	AlignmentTouchMaxLevel = 100
+	// AlignmentRetroMaxLevel is the highest alignment level on DOFUS Retro.
+	AlignmentRetroMaxLevel = 100
 
 	alignBookPageCustomIDGroups        = 5
 	alignBookCitySelectCustomIDGroups  = 3
@@ -42,7 +46,7 @@ var (
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
-func getAlignSlashCommand() *discordgo.ApplicationCommand {
+func getAlignSlashCommand(g game) *discordgo.ApplicationCommand {
 	var minLevel float64 = AlignmentMinLevel
 	return &discordgo.ApplicationCommand{
 		Name:                     AlignSlashCommandName,
@@ -80,10 +84,10 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 					{
 						Name: AlignServerOptionName,
 						Description: i18n.GetDefault("align.get.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						NameLocalizations: *i18n.GetLocalizations("align.get.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.get.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						Type:         discordgo.ApplicationCommandOptionString,
 						Required:     false,
 						Autocomplete: true,
@@ -123,15 +127,15 @@ func getAlignSlashCommand() *discordgo.ApplicationCommand {
 						Type:                     discordgo.ApplicationCommandOptionInteger,
 						Required:                 true,
 						MinValue:                 &minLevel,
-						MaxValue:                 AlignmentMaxLevel,
+						MaxValue:                 float64(g.alignmentMaxLevel),
 					},
 					{
 						Name: AlignServerOptionName,
 						Description: i18n.GetDefault("align.set.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						NameLocalizations: *i18n.GetLocalizations("align.set.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("align.set.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						Type:         discordgo.ApplicationCommandOptionString,
 						Required:     false,
 						Autocomplete: true,

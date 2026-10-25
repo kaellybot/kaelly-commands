@@ -23,6 +23,10 @@ const (
 
 	JobMinLevel = 0
 	JobMaxLevel = 200
+	// JobTouchMaxLevel is the highest job level on DOFUS Touch.
+	JobTouchMaxLevel = 100
+	// JobRetroMaxLevel is the highest job level on DOFUS Retro.
+	JobRetroMaxLevel = 100
 
 	jobBookPageCustomIDGroups   = 4
 	jobBookSelectCustomIDGroups = 2
@@ -36,7 +40,7 @@ var (
 )
 
 //nolint:nolintlint,exhaustive,lll,dupl
-func getJobSlashCommand() *discordgo.ApplicationCommand {
+func getJobSlashCommand(g game) *discordgo.ApplicationCommand {
 	var minLevel float64 = JobMinLevel
 	return &discordgo.ApplicationCommand{
 		Name:                     JobSlashCommandName,
@@ -65,10 +69,10 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 					{
 						Name: JobServerOptionName,
 						Description: i18n.GetDefault("job.get.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						NameLocalizations: *i18n.GetLocalizations("job.get.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.get.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						Type:         discordgo.ApplicationCommandOptionString,
 						Required:     false,
 						Autocomplete: true,
@@ -99,15 +103,15 @@ func getJobSlashCommand() *discordgo.ApplicationCommand {
 						Type:                     discordgo.ApplicationCommandOptionInteger,
 						Required:                 true,
 						MinValue:                 &minLevel,
-						MaxValue:                 JobMaxLevel,
+						MaxValue:                 float64(g.jobMaxLevel),
 					},
 					{
 						Name: JobServerOptionName,
 						Description: i18n.GetDefault("job.set.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						NameLocalizations: *i18n.GetLocalizations("job.set.server.name"),
 						DescriptionLocalizations: *i18n.GetLocalizations("job.set.server.description",
-							i18n.Vars{"game": constants.GetGame()}),
+							i18n.Vars{"game": g.name}),
 						Type:         discordgo.ApplicationCommandOptionString,
 						Required:     false,
 						Autocomplete: true,
