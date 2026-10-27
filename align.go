@@ -27,7 +27,7 @@ const (
 	// AlignmentTouchMaxLevel is the highest alignment level on DOFUS Touch.
 	AlignmentTouchMaxLevel = 100
 	// AlignmentRetroMaxLevel is the highest alignment level on DOFUS Retro.
-	AlignmentRetroMaxLevel = 100
+	AlignmentRetroMaxLevel = 60
 
 	alignBookPageCustomIDGroups        = 5
 	alignBookCitySelectCustomIDGroups  = 3

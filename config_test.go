@@ -23,15 +23,13 @@ func configChannelOption(t *testing.T, cmds []*discordgo.ApplicationCommand,
 // only lets a plain text channel follow one: the picker must not offer the
 // rest, otherwise the bot can only refuse after the fact.
 func TestConfigNotificationChannelOptionsOnlyOfferTextChannels(t *testing.T) {
-	for game, cmds := range map[string][]*discordgo.ApplicationCommand{
-		"DOFUS":       commands.GetDofusCommands(),
-		"DOFUS Touch": commands.GetTouchCommands(),
-	} {
-		for _, subCommandName := range []string{
-			commands.ConfigAlmanaxSubCommandName,
-			commands.ConfigRSSSubCommandName,
-			commands.ConfigTwitterSubCommandName,
-		} {
+	for game, cmds := range gameCommands() {
+		subCommandNames := []string{commands.ConfigRSSSubCommandName, commands.ConfigTwitterSubCommandName}
+		if game != "DOFUS Retro" {
+			subCommandNames = append(subCommandNames, commands.ConfigAlmanaxSubCommandName)
+		}
+
+		for _, subCommandName := range subCommandNames {
 			t.Run(game+"/"+subCommandName, func(t *testing.T) {
 				option := configChannelOption(t, cmds, subCommandName)
 

@@ -14,6 +14,6 @@ Each game registers its own command set on its own Discord application:
 | --- | --- |
 | `GetDofusCommands()` | about, align, almanax, config (get, almanax, rss, server, twitter), help, item, job, map, set |
 | `GetTouchCommands()` | about, align, almanax, config (get, almanax, rss, server, twitter), help, job (level up to 100) |
-| `GetRetroCommands()` | about, align, config (get, server), help, job (level up to 100) |
+| `GetRetroCommands()` | about, align (level up to 60), config (get, rss, server, twitter), help, job (level up to 100) |
 
 The command, option and custom ID names are shared by every game.

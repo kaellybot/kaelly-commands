@@ -88,8 +88,10 @@ func TestEachGameConfiguresItsOwnFeatures(t *testing.T) {
 		subCommandNames(findCommand(t, commands.GetDofusCommands(), commands.ConfigCommandName)))
 	assert.Equal(t, notifications,
 		subCommandNames(findCommand(t, commands.GetTouchCommands(), commands.ConfigCommandName)))
-	assert.Equal(t, []string{commands.ConfigGetSubCommandName, commands.ConfigServerSubCommandName},
-		subCommandNames(findCommand(t, commands.GetRetroCommands(), commands.ConfigCommandName)))
+	assert.Equal(t, []string{
+		commands.ConfigGetSubCommandName, commands.ConfigRSSSubCommandName,
+		commands.ConfigServerSubCommandName, commands.ConfigTwitterSubCommandName,
+	}, subCommandNames(findCommand(t, commands.GetRetroCommands(), commands.ConfigCommandName)))
 }
 
 func TestLevelsAreCappedPerGame(t *testing.T) {
