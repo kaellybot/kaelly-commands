@@ -12,14 +12,16 @@ import (
 )
 
 const (
-	JobSlashCommandName  = "job"
-	JobUserCommandName   = "Jobs"
-	JobGetSubCommandName = "get"
-	JobSetSubCommandName = "set"
+	JobSlashCommandName   = "job"
+	JobUserCommandName    = "Jobs"
+	JobGetSubCommandName  = "get"
+	JobSetSubCommandName  = "set"
+	JobUserSubCommandName = "user"
 
 	JobJobOptionName    = "job"
 	JobLevelOptionName  = "level"
 	JobServerOptionName = "server"
+	JobMemberOptionName = "member"
 
 	JobMinLevel = 0
 	JobMaxLevel = 200
@@ -119,6 +121,41 @@ func getJobSlashCommand(g game) *discordgo.ApplicationCommand {
 						Autocomplete: true,
 					},
 				},
+			},
+			getJobUserSubCommand(g),
+		},
+	}
+}
+
+// getJobUserSubCommand is the slash twin of the JobUserCommandName user command.
+//
+//nolint:nolintlint,exhaustive,lll,dupl
+func getJobUserSubCommand(g game) *discordgo.ApplicationCommandOption {
+	return &discordgo.ApplicationCommandOption{
+		Name:                     JobUserSubCommandName,
+		Description:              i18n.GetDefault("job.user.description"),
+		NameLocalizations:        *i18n.GetLocalizations("job.user.name"),
+		DescriptionLocalizations: *i18n.GetLocalizations("job.user.description"),
+		Type:                     discordgo.ApplicationCommandOptionSubCommand,
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Name:                     JobMemberOptionName,
+				Description:              i18n.GetDefault("job.user.member.description"),
+				NameLocalizations:        *i18n.GetLocalizations("job.user.member.name"),
+				DescriptionLocalizations: *i18n.GetLocalizations("job.user.member.description"),
+				Type:                     discordgo.ApplicationCommandOptionUser,
+				Required:                 false,
+			},
+			{
+				Name: JobServerOptionName,
+				Description: i18n.GetDefault("job.user.server.description",
+					i18n.Vars{"game": g.name}),
+				NameLocalizations: *i18n.GetLocalizations("job.user.server.name"),
+				DescriptionLocalizations: *i18n.GetLocalizations("job.user.server.description",
+					i18n.Vars{"game": g.name}),
+				Type:         discordgo.ApplicationCommandOptionString,
+				Required:     false,
+				Autocomplete: true,
 			},
 		},
 	}

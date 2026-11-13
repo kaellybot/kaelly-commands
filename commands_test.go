@@ -120,6 +120,37 @@ func TestLevelsAreCappedPerGame(t *testing.T) {
 	}
 }
 
+// Every game lists someone's jobs and alignments through a slash sub-command,
+// besides the user commands of the context menu.
+func TestEachGameListsSomeoneJobsAndAlignments(t *testing.T) {
+	subCommands := map[string]struct{ user, member, server string }{
+		commands.AlignSlashCommandName: {
+			commands.AlignUserSubCommandName, commands.AlignMemberOptionName, commands.AlignServerOptionName,
+		},
+		commands.JobSlashCommandName: {
+			commands.JobUserSubCommandName, commands.JobMemberOptionName, commands.JobServerOptionName,
+		},
+	}
+
+	for game, cmds := range gameCommands() {
+		for name, expected := range subCommands {
+			t.Run(game+" /"+name, func(t *testing.T) {
+				user := findOption(t, findCommand(t, cmds, name).Options, expected.user)
+				assert.Equal(t, discordgo.ApplicationCommandOptionSubCommand, user.Type)
+
+				member := findOption(t, user.Options, expected.member)
+				assert.Equal(t, discordgo.ApplicationCommandOptionUser, member.Type)
+				assert.False(t, member.Required, "the author is the default member")
+
+				server := findOption(t, user.Options, expected.server)
+				assert.Equal(t, discordgo.ApplicationCommandOptionString, server.Type)
+				assert.False(t, server.Required, "the guild server is the default server")
+				assert.True(t, server.Autocomplete)
+			})
+		}
+	}
+}
+
 // Server descriptions name the game, so that players know which servers the
 // autocompletion offers.
 func TestDescriptionsNameTheirGame(t *testing.T) {

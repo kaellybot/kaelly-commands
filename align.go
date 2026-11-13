@@ -12,15 +12,17 @@ import (
 )
 
 const (
-	AlignSlashCommandName  = "align"
-	AlignUserCommandName   = "Alignments"
-	AlignGetSubCommandName = "get"
-	AlignSetSubCommandName = "set"
+	AlignSlashCommandName   = "align"
+	AlignUserCommandName    = "Alignments"
+	AlignGetSubCommandName  = "get"
+	AlignSetSubCommandName  = "set"
+	AlignUserSubCommandName = "user"
 
 	AlignCityOptionName   = "city"
 	AlignOrderOptionName  = "order"
 	AlignLevelOptionName  = "level"
 	AlignServerOptionName = "server"
+	AlignMemberOptionName = "member"
 
 	AlignmentMinLevel = 0
 	AlignmentMaxLevel = 100
@@ -143,6 +145,41 @@ func getAlignSlashCommand(g game) *discordgo.ApplicationCommand {
 						Autocomplete: true,
 					},
 				},
+			},
+			getAlignUserSubCommand(g),
+		},
+	}
+}
+
+// getAlignUserSubCommand is the slash twin of the AlignUserCommandName user command.
+//
+//nolint:nolintlint,exhaustive,lll,dupl
+func getAlignUserSubCommand(g game) *discordgo.ApplicationCommandOption {
+	return &discordgo.ApplicationCommandOption{
+		Name:                     AlignUserSubCommandName,
+		Description:              i18n.GetDefault("align.user.description"),
+		NameLocalizations:        *i18n.GetLocalizations("align.user.name"),
+		DescriptionLocalizations: *i18n.GetLocalizations("align.user.description"),
+		Type:                     discordgo.ApplicationCommandOptionSubCommand,
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Name:                     AlignMemberOptionName,
+				Description:              i18n.GetDefault("align.user.member.description"),
+				NameLocalizations:        *i18n.GetLocalizations("align.user.member.name"),
+				DescriptionLocalizations: *i18n.GetLocalizations("align.user.member.description"),
+				Type:                     discordgo.ApplicationCommandOptionUser,
+				Required:                 false,
+			},
+			{
+				Name: AlignServerOptionName,
+				Description: i18n.GetDefault("align.user.server.description",
+					i18n.Vars{"game": g.name}),
+				NameLocalizations: *i18n.GetLocalizations("align.user.server.name"),
+				DescriptionLocalizations: *i18n.GetLocalizations("align.user.server.description",
+					i18n.Vars{"game": g.name}),
+				Type:         discordgo.ApplicationCommandOptionString,
+				Required:     false,
+				Autocomplete: true,
 			},
 		},
 	}
